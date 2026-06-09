@@ -1,0 +1,1851 @@
+<!doctype html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test z BSK LAB</title>
+        <style>
+            :root {
+                /* Nowa paleta kolorów - Dark Mode */
+                --primary: #60a5fa; /* Jasny niebieski */
+                --primary-hover: #3b82f6;
+                --success: #22c55e; /* Soczysta zieleń */
+                --success-bg: #052e16; /* Ciemne tło dla sukcesu */
+                --success-border: #15803d;
+
+                --error: #f87171; /* Jasny czerwony */
+                --error-bg: #450a0a; /* Ciemne tło dla błędu */
+                --error-border: #b91c1c;
+
+                --bg: #0f172a; /* Bardzo ciemne tło strony (Slate 900) */
+                --card: #1e293b; /* Ciemne tło kart (Slate 800) */
+                --text-main: #f1f5f9; /* Prawie biały tekst */
+                --text-muted: #94a3b8; /* Szary tekst podrzędny */
+                --border: #334155; /* Kolor obramowań */
+                --input-bg: #020617; /* Tło inputów/przycisków opcji */
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: var(--bg);
+                color: var(--text-main);
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            header {
+                text-align: center;
+                margin-bottom: 40px;
+                padding: 20px;
+                background: var(--card);
+                border-radius: 12px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--border);
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--primary);
+                font-size: 1.8rem;
+            }
+            p.subtitle {
+                color: var(--text-muted);
+                margin-top: 5px;
+            }
+
+            .quiz-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                background: var(--card);
+                padding: 15px;
+                border-radius: 8px;
+                position: sticky;
+                top: 20px;
+                z-index: 10;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border);
+            }
+
+            .score-box {
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+            .score-val {
+                color: var(--primary);
+            }
+
+            .question-card {
+                background: var(--card);
+                padding: 25px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s;
+                border: 1px solid var(--border);
+                border-left: 5px solid transparent;
+            }
+
+            .question-card.correct {
+                border-left-color: var(--success);
+            }
+            .question-card.wrong {
+                border-left-color: var(--error);
+            }
+
+            .q-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: bold;
+            }
+
+            .q-text {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+                font-weight: 600;
+                color: var(--text-main);
+            }
+
+            .options-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .option-btn {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border: 2px solid var(--border);
+                border-radius: 8px;
+                cursor: pointer;
+                background: var(--input-bg);
+                transition: all 0.2s;
+                text-align: left;
+                position: relative;
+                color: var(--text-main);
+            }
+
+            .option-btn:hover {
+                background-color: #334155;
+                border-color: #64748b;
+            }
+
+            /* Styles for checked states */
+            input[type="radio"],
+            input[type="checkbox"] {
+                margin-right: 15px;
+                transform: scale(1.2);
+                accent-color: var(--primary);
+            }
+
+            /* Feedback styles - Adjusted for Dark Mode */
+            .option-btn.is-correct {
+                background-color: var(--success-bg);
+                border-color: var(--success-border);
+                color: #86efac; /* Light green text */
+            }
+
+            .option-btn.is-wrong {
+                background-color: var(--error-bg);
+                border-color: var(--error-border);
+                color: #fca5a5; /* Light red text */
+            }
+
+            .option-btn.should-be {
+                border-color: var(--success);
+                border-style: dashed;
+                color: var(--success);
+            }
+
+            /* Disabled state for inputs after checking */
+            input:disabled {
+                cursor: not-allowed;
+            }
+            .option-btn.disabled {
+                cursor: default;
+                opacity: 0.9;
+            }
+
+            .actions {
+                margin-top: 20px;
+                text-align: right;
+            }
+
+            button.check-btn {
+                background-color: var(--primary);
+                color: #0f172a; /* Dark text on bright button */
+                border: none;
+                padding: 10px 25px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1rem;
+                transition: background 0.2s;
+            }
+
+            button.check-btn:hover {
+                background-color: var(--primary-hover);
+            }
+
+            /* Specific override for reset button to look dark grey */
+            button.reset-style {
+                background-color: #334155 !important;
+                color: white !important;
+            }
+            button.reset-style:hover {
+                background-color: #475569 !important;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            /* LaTeX like formatting replacement */
+            .math {
+                font-family: "Times New Roman", serif;
+                font-style: italic;
+            }
+
+            /* Explanation styles */
+            .explanation-container {
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 1px dashed var(--border);
+            }
+
+            .show-explanation-btn {
+                background-color: #4b5563;
+                color: var(--text-main);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background 0.2s;
+                margin-right: 10px;
+            }
+
+            .show-explanation-btn:hover {
+                background-color: #6b7280;
+            }
+
+            .explanation-text {
+                margin-top: 12px;
+                padding: 15px;
+                background: #1a1a2e;
+                border-left: 3px solid var(--primary);
+                border-radius: 0 8px 8px 0;
+                color: #a5b4fc;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                white-space: pre-wrap;
+            }
+
+            .explanation-text.hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Test z BSK LAB</h1>
+                <p class="subtitle">
+                    Baza pytań z odpowiedziami (Tryb: Wszystko jako Wielokrotny
+                    Wybór)
+                </p>
+            </header>
+
+            <div class="quiz-controls">
+                <div id="progress">Pytanie: 0 / 0</div>
+                <div class="score-box">
+                    Wynik: <span id="score" class="score-val">0</span>%
+                </div>
+                <button class="check-btn reset-style" onclick="resetQuiz()">
+                    Resetuj
+                </button>
+            </div>
+
+            <div id="quiz-container"></div>
+        </div>
+
+        <script>
+            // --- DANE WEJŚCIOWE (RAW DATA) ---
+            const rawData = `
+[Q] Jakie CWmax będzie jeśli ostatnie było równe 63 i nie dostaliśmy ACK?
+a) 32
+b) 31
+>>>c) 63
+d) 127
+::Tylko CW (Contention Window) się powiększa. CWmin i CWmax to parametry łącza CSMA/CA i mają stałą wartość.
+
+[Q] Jakie CW będzie jeśli ostatnie było równe 15 i nie dostaliśmy ACK?
+>>>a) 31 
+b) 32
+c) 255
+d) 63
+:: Wzorek jest taki: CW = 2^n * (CWmin + 1) - 1, gdzie n - to liczba nieudanych transmisji, która resetuje się do CWmin gdy transmisja przebiegnie poprawnie (dostaniemy ACK). Czas Backoff to jest losowana liczba z przedziału od 0 do CW, pomnożona przez wartość slot time. CWmin i CWmax to tylko parametry łącza CSMA/CA określające w jakich granicach będziemy losować CW.
+
+[Q] -> Narysować wykres komunikacji nadawca odbiorca i co odbierają inni.
+-> Narysować zajętość wektora NAV (Rts Cts Ack data przebiegi czasowe u
+nadawcy odbiorcy oraz stacji).
+>>>a) Zrobione 
+b) Nie zrobione
+:: Trzeba narysować.
+
+[Q] Jakie CW będzie jeśli ostatnie było równe 127 i dostaliśmy ACK?
+>>>a) CWmin
+b) 0
+c) CWmax
+d) NAV
+:: Po udanej transmisji CW jest resetowany do CWmin.
+
+[Q] Czym jest SIFS?
+>>>a) Czas narzucony przez parametry fizyczne łącza
+b) Czas trwania ACK
+>>>c) Czas największego priorytetu
+>>>d) Czas po którym przychodzi ACK
+e) Czas po którym przychodzi RTS
+>>>f) Czas po którym przychodzi CTS
+:: nie wiem co tu napisać jak odpowiedziałeś to kumasz 
+
+[Q] Czym jest DIFS?
+>>>a) Czas obliczany na podstawie czasów o największym priorytecie
+b) Czas trwania ACK
+>>>c) Czas najmniejszego priorytetu
+d) Czas po którym przychodzi ACK
+e) Czas po którym przychodzi RTS
+>>>f) Czas dla danych asynchronicznych
+:: DIFS = SIFS + 2 x slot time
+
+[Q] Czym jest PIFS?
+>>>a) Czas narzucony przez parametry fizyczne łącza
+b) Czas trwania ACK
+>>>c) Czas średniego priorytetu
+>>>d) Jeśli nie ma odpowiedzi na CF-POLL, to po tym czasie będzie nowy CF-POLL
+e) Czas po którym przychodzi RTS
+>>>f) Czas po którym następuje CFP (Contention free period)
+:: PIFS = SIFS + slot time
+
+[Q] Czym jest slot time?
+>>>a) Czas narzucony przez parametry fizyczne łącza
+b) Czas trwania ACK
+c) Czas średniego priorytetu
+>>>d) Dłuższy dla FHSS niż dla DSSS
+>>>e) Krótszy dla IR niż dla DSSS
+f) Czas po którym przychodzi CTS
+:: nie wiem co tu napisać jak odpowiedziałeś to kumasz 
+
+[Q] Czym jest EIFS?
+>>>a) Czas przeznaczony do unikania kolizji w sytuacji gdy stacja nie rozumie danego pakietu
+b) Czas trwania ACK
+c) Czas najmniejszego priorytetu
+d) Czas po którym przychodzi ACK
+e) Czas po którym przychodzi RTS
+>>>f) Inaczej Extended IFS
+:: DIFS = SIFS + 2 x slot time
+
+[Q] Jak zmienić szybkość nadawania ramek w COMNET III ? 
+>>>a) ustawiając parametr IAT w bloku MESSAGE SOURCE
+b) ustawiając parametr IAT w bloku COMPUTER GROUP
+c) Przyspieszając czas symulacji
+d) ustawiając parametr IAT w bloku CSMA/CA LINK
+:: IAT (interarrival time)
+
+[Q] Jak realizowane jest śledzenie nośnej w standardzie 802.11 Legacy?
+>>>a) Fizyczny pomiar mocy CCA
+b) Wykorzystując mechanizm Backoff
+>>>c) Wykrywanie obecności ramek od innych użytkowników 
+d) Badając liczbę wysłanych ramek Beacon w ściśle określonym przedziale czasu
+:: 802.11 Legacy to jest pierwszy standard 802.11
+
+[Q] Dlaczego wydajność sieci jest tak niska podczas transmisji krótkich ramek danych?
+>>>a) Bo mamy większy narzut z nagłówka MAC
+b) Bo mamy mniejszy narzut z nagłówka MAC
+c) Bo narażamy transmisje na większe prawdopodobieństwo błędu
+>>>d) Bo występuje więcej kolizji i Backoff'ów
+::Więcej ramek = więcej kolizji
+
+[Q] Jaki jest związek między liczbą stacji, epizodami kolizji i zderzającymi się ramkami w warunkach nasycenia?
+>>>a) Im większa liczba stacji tym więcej kolizji.
+b) liczba uszkodzonych ramek jest zawsze 2 razy większa od liczby kolizji
+c) Im mniejsza liczba stacji tym więcej kolizji bo wysyłamy większe ramki
+>>>d) liczba uszkodzonych ramek jest co najmniej 2 razy większa od liczby kolizji
+::Więcej stacji = więcej ramek = więcej kolizji
+
+[Q] Jaka jest optymalna wartość CWmin dla 5 stacji transmitujących ramki o rozmiarze 2000 bajtów?
+>>>a) 63
+b) 1023
+c) 33
+d) 15
+:: CWmin = 1023 jest optymalne da 100 stacji
+
+[Q] Jaka jest rola wartości CWmax? Czy zawsze powinniśmy ustawiać wartość CWmax na 255 slotów (default w COMNET III)?
+>>>a) CWmax definiuje maksymalną wartość CW
+b) 255 to dobra wartość dla CWmax
+c) CWmax określa maksymalny rozmiar pakietu, a jego wartość zależy od parametru Threshold
+>>>d) To administrator powinien oszacować (albo przeprowadzić symulacje) jaka wartość CWmax będzie odpowiednia dla danej konfiguracji sieci
+:: brak komentarza
+
+[Q] Jak obliczyć FER dla określonej długości ramki (np. ramki ACK) na podstawie informacji FER podanych
+dla ramki o innej długości?
+>>>a) Znam wzór
+b) Nie znam wzoru
+:: Wzorek: FER = 1 - (1 - BER)^N, gdzie N to długość ramki w bitach.
+
+[Q] W jakich scenariuszach należy zmienić (zmniejszyć) parametr progu fragmentacji z domyślnej wartości 2304 bajtów?
+>>>a) Żeby zmniejszyć FER
+b) Żeby zmniejszyć BER
+c) Żeby zmniejszyć opóźnienie w sieci
+d) Żeby uniknąć kolizji na łączu
+:: Patrz na wzór: FER = 1 - (1 - BER)^N, gdzie N to długość ramki w bitach.
+
+[Q] Jaka będzie wydajność łącza CSMA/CA w stanie nasycenia jeżeli liczba stacji wzrośnie 
+z 5 do 100?
+>>>a) spadnie o 30%
+b) spadnie o 45%
+c) spadnie o 25%
+:: Na labie było
+
+[Q] Jaka będzie wydajność łącza CSMA/CA w stanie nasycenia jeżeli liczba stacji wzrośnie 
+z 5 do 100?
+>>>a) spadnie o 30%
+b) spadnie o 45%
+c) spadnie o 25%
+:: Na labie było
+
+[Q] Jakie ramki używane są w uwierzytelnianiu shared key
+>>>a) Authentication request 
+>>>b) Challenge text
+>>>c) Encrypted chanllenge text
+>>>d) Positive/Negative response
+e) Association request
+:: Tutaj z rysunku z wykładu
+
+[Q] Jaki tryb karty sieciowej do monitorowania ruchu
+>>>a) Monitor
+b) Ghost
+c) Kismet
+d) Mouse
+:: Tryb monitor pozwala śledzić ruch w sieci
+
+[Q] Co jest przed warstwą MAC
+>>>a) PLCP
+>>>b) PMD
+>>>c) LLC 
+>>>d) BDJQP 
+:: PLCP - medium pomiędzy warstwa fizyczna a warstwa MAC, służy do synchronizacji oraz wykrywania nośnej, generuje preambułe. PMD - odpowiada za modulacje i kodowanie.
+
+[Q] Jakie ramki używane są w aktywnym skanowaniu sieci
+>>>a) probe request
+>>>b) probe response
+c) sense assertion 
+d) beacon
+:: Aktywne skanowanie jest lepsze bo my słyszymy AP i AP słyszy nas.
+
+[Q] Jakie ramki używane są w pasywnym skanowaniu sieci
+>>>a) beacon
+b) probe response
+c) association request
+d) association response
+:: Beacon przenosi informacje o warstwie fizycznej
+
+[Q] Wymień 4 ramki zarządzające
+>>>a) Authentication 
+>>>b) Deauthentication 
+>>>c) Association request
+>>>d) Association response
+e) ACK
+f) RTS
+:: Wszystko co zarządza - czyli ZARZĄDZAM WPUŚCIĆ TEGO ZIUTKA DO MOJEJ SIECI
+
+[Q] Wymień 4 ramki kontrolne
+>>>a) ACK
+>>>b) CTS 
+>>>c) RTS 
+>>>d) PS-POLL 
+e) beacon
+f) probe request
+:: Wszystkie ramki, które wymienione są w tabeli na instrukcji lab2.
+
+[Q] umiesz filtry w wireshark
+>>>a) umiem
+b) nie umiem
+>>>c) pierdole gierczaka
+:: Jak nie umiesz to weź se zobacz na lab2 instrukcja + filtry
+
+[Q] Jaka jest rola pola Association ID w ramkach 802.11?
+>>>a) Pole do identyfikacji urządzania które ma się wybudzić przy power savingu w obrębie jednego BSS
+>>>c) unikalny numer identyfikacyjny każdego urządzenia w sieci BSS
+d) specjalny numer urządzeń które zużywają najwięcej energii (im większy numer tym większe zużycie energii)
+:: inaczej AID 
+
+[Q] Czy punkty dostępowe (AP) mogą transmitować ramki typu NULL?
+>>>a) TAK
+b) NIE
+c) MOZE
+d) RACZEJ TAK
+:: A CZEMU NIE
+
+[Q] Jaka jest rola ramek RTS i CTS?
+>>>a) Stanowią rozwiązanie problemu ukrytego węzła
+b) Są częścią autentykacji urządzenia w sieci
+>>>c) Rezerwacja łącza w celu wysłania ramki oraz otrzymania odpowiedzi (bez mechanizmu Backoff)
+d) Służą do propagacji parametrów łącza w sieci
+:: Jest grafika na wykładzie
+
+[Q] Jaka jest funkcja ATIM?
+a) Informuje o danych oczekujących w buforach dla unicastu w sieciach ESS
+b) Informuje o danych oczekujących w buforach tylko dla localhost w sieciach MBSS
+c) Informuje o danych oczekujących w buforach dla broadcastu w sieciach BSS
+>>>d) Informuje o danych oczekujących w buforach, w sieciach tylko i wyłącznie IBSS
+:: 
+
+[Q] Jaka jest funkcja TIM?
+a) Czas po którym następuje multicast jeśli wcześniej wystąpiła kolizja
+>>>b) lista odbiorników unicast obsługiwanych przez AP
+c) lista odbiorników broadcastu i multicastu obsługiwanych przez AP
+d) Czas po którym następuje unicast jeśli wcześniej wystąpiła kolizja
+:: 
+
+[Q] Jaka jest funkcja DTIM?
+>>>a) lista odbiorników broadcastu i multicastu obsługiwanych przez AP
+b) lista odbiorników unicastu obsługiwanych przez AP
+c) lista odbiorników broadcastu i multicastu nie obsługiwanych przez AP
+d) Czas po którym następuje broadcast jeśli wcześniej wystąpiła kolizja
+:: 
+
+[Q] Jakie funkcje są zdefiniowane i realizowane na poziomie warstwy MAC standardu IEEE 802.11?
+>>>a) RTS/CTS
+>>>b) Fragmentacje
+c) Routing
+>>>d) Uwierzytelnianie
+>>>e) FCS (Crc sumy kontrolne)
+>>>f) CSMA/CA - Backoff
+:: 
+
+[Q] Jaką długość ma ICV?
+>>>a) 4B
+b) 8B
+c) 16B
+d) 32B
+:: to suma kontrolna zaszyfrowanych danych WEPem
+
+[Q] co to IV?
+>>>a) Wektor inicjalizacyjny WEP
+b) Wektor odliczający trwanie jednego RTS
+>>>c) Ma mało możliwych kombinacji - dlatego WEP jest podatny na ataki słownikowe, caffe latte, oraz brute force
+d) Wektor kombinacji szyfrującej w WPA2
+:: składa się z: IV(3B) + PADDING(6b) + ID klucza(2b)
+
+[Q] do czego służy oprogramowanie airodump-ng?
+>>>a) Do przechwytywania pakietów w sieci i zapisywania ich do pliku
+b) Do filtrowania ramek w sieci bezprzewodowej
+c) Do generowania sztucznego ruchu w sieci - packet injection
+d) do tworzenia tzw. "Evil Twin" fałszywej sieci i wyłapywania handshaków
+:: 
+
+[Q] do czego służy oprogramowanie airbase-ng?
+>>>a) do tworzenia tzw. "Evil Twin" fałszywej sieci i wyłapywania handshaków
+b) Do filtrowania ramek w sieci bezprzewodowej
+c) Do generowania sztucznego ruchu w sieci - packet injection
+d) Do przechwytywania pakietów w sieci i zapisywania ich do pliku
+:: 
+
+[Q] do czego służy oprogramowanie aircrack-ng?
+>>>a) Służy do łamania klucza WEP na podstawie przechwyconych pakietów (razem z wartościami IV) z programu airodump-ng
+b) do tworzenia tzw. "Evil Twin" fałszywej sieci i wyłapywania handshaków
+c) Do generowania sztucznego ruchu w sieci - packet injection
+d) Do filtrowania ramek w sieci bezprzewodowej
+:: 
+
+[Q] do czego służy oprogramowanie aireplay-ng?
+>>>a) Do generowania sztucznego ruchu w sieci - packet injection
+b) do tworzenia tzw. "Evil Twin" fałszywej sieci i wyłapywania handshaków
+c) Do filtrowania ramek w sieci bezprzewodowej
+d) Do przechwytywania pakietów w sieci i zapisywania ich do pliku
+:: 
+
+[Q] co to kismet?
+>>>a) Oprogramowanie służące do pasywnego monitorowania sieci bezprzewodowych
+b) Oprogramowanie służące do aktywnego monitorowania sieci przewodowych
+c) Oprogramowanie służące do aktywnego monitorowania sieci bezprzewodowych
+d) Oprogramowanie służące do pasywnego monitorowania sieci przewodowych
+:: 
+
+[Q] co to packet injection?
+>>>a) Zalewanie sieci pakietami (jeśli sieć szyfrowana jest za pomocą WEP to szybko wszystkie możliwości IV się wyczerpią i uzyskamy dostęp do sieci)
+b) Podmienianie pakietów "w locie" w sieci
+c) Usuwanie pakietów z sieci 
+d) blokowanie szczególnych pakietów
+:: 
+
+[Q] Narysuj schemat blokowy kodera/dekodera WEP
+>>>a) Narysowane
+b) Nie narysowane 
+>>>c) Gierczak cipacz
+:: Najjak
+
+[Q] do czego służy oprogramowanie aireplay-ng?
+>>>a) Do generowania sztucznego ruchu w sieci - packet injection
+b) Do filtrowania ramek w sieci bezprzewodowej
+c) do tworzenia tzw. "Evil Twin" fałszywej sieci i wyłapywania handshaków
+d) Do przechwytywania pakietów w sieci i zapisywania ich do pliku
+:: 
+
+[Q] Jakie są główne zasady kodów strumieniowych i blokowych? Jakie są tryby i cechy charakterystyczne kodów blokowych?
+>>>a) Kody strumieniowe - przetwarzają sygnał bit po bicie, zazwyczaj działają w oparciu o seed, generator liczb pseudolosowych, oraz operacje logiczna XOR (np. WEP RC4)
+b) Kody blokowe są przetwarzane w paczkach bitów np. AES (WPA2, WPA3)
+:: 
+
+[Q] Jakie są znane rodzaje ataków na sieci bezprzewodowe wykorzystujące algorytm WEP (aktywny i pasywny)?
+>>>a) Caffe Latte
+b) Latte Machiato
+>>>c) Hirte
+d) Tęczowy
+>>>e) ChopChop
+>>>f) z użyciem tablic tęczowych (aircrack-ng)
+:: 
+
+[Q] Jaka jest główna cecha operacji logicznej XOR stosowanej w algorytmach kodowania (napisz i wyjaśnij równanie)?
+a) Jest odwracalny
+b) Nie jest odwracalny
+>>>c) Jest samoodwracalny
+d) Nie jest samoodwracalny
+:: 
+
+[Q] Ile adresów warstwy 3 jest w nagłówku ramki MAC - kiedy wszystkie mają wartość?
+a) 3, jeśli nasza siec to BSS
+b) 4, jeśli ramka przechodzi przez DS
+c) 5, jeśli ramka przechodzi przez DS
+d) 4, jeśli nasza ramka przechodzi przez IBSS
+::
+
+[Q] Co to bridging i czym się różni routingu
+>>>a) bridging to łączenie dwóch segmentów sieci tworząc jedna wspólną podsieć - działa w warstwie II, natomiast routing łączy dwie różne podsieci - pozwalając im się komunikować ale zachowując odrębność.
+b) bridging to automatyczne przypisywanie adresów IP przez serwer DHCP natomiast routing odpowiada za mapowanie nazw domenowych w bazie DNS
+c) bridging to proces szyfrowania ramek za pomocą protokołu TLS na poziomie karty sieciowej a routing to mechanizm translacji adresów NAT
+d) bridging to zjawisko tłumienia sygnału radiowego w pasmie 5Ghz przez przeszkody stałe a routing to technologia zasilania urządzeń przez kabel Ethernet POE
+:: 
+
+[Q] Co to jest tablica bridgingu 
+>>>a) tablica adresów MAC (II warstwa) w switchu albo w AP, która kojarzy interfejs tego urządzenia z konkretnym urządzeniem hosta (jego adresem MAC) 
+b) struktura danych w routerach brzegowych służąca do agregacji prefiksów IP w protokole routingu zewnętrznego BGP
+c) protokół warstwy aplikacji służący do bezpiecznej synchronizacji czasu systemowego na urządzeniach sieciowych za pomocą serwerów NTP
+d) baza danych serwera DHCP przechowująca informacje o wolnych i zarezerwowanych adresach w ramach danej puli sieciowe
+::
+
+[Q] Do czego służy iptables?
+>>>a) do konfiguracji reguł wbudowanej w jądro systemu Linux zapory sieciowej (firewalla) oraz realizowania translacji adresów NAT
+b) do wyświetlania statycznego mapowania adresów IP na adresy fizyczne MAC w lokalnej tablicy ARP systemu Linux
+c) do monitorowania i analizy opóźnień transmisji światłowodowej w sieciach szkieletowych przy użyciu protokołu ICMP
+d) do automatycznego rozgłaszania adresów bramy domyślnej w protokołach routingu dynamicznego RIP oraz OSPF
+:: 
+ 
+[Q] Co to jest TC?
+>>>a) Traffic Control - narzędzie w systemie Linux służące do manipulowania ruchem sieciowym, umożliwiające m.in. ograniczanie pasma, priorytetyzację pakietów oraz symulowanie opóźnień i strat
+b) Transmission Control - protokół warstwy transportowej odpowiedzialny za sprzętową fragmentację ramek Ethernet bezpośrednio na interfejsach radiowych WLAN
+c) Topology Change - specjalny typ komunikatu w protokole Spanning Tree (STP), który wymusza na przełącznikach warstwy II natychmiastowe usunięcie lokalnej bazy danych DNS
+d) Tunneling Controller - moduł jądra Linux odpowiedzialny za automatyczne trasowanie pakietów pomiędzy protokołami routingu dynamicznego OSPF oraz BGP
+:: 
+
+[Q] Podaj przykładowe parametry które mogą różnić na łączach wirtualnych na jednym łączu fizycznym
+>>>a) Przepustowość (bitrate), opóźnienia (delay), poziom strat pakietów (packet loss), zmienność opóźnień (jitter) oraz priorytet kolejkowania (QoS)
+b) Częstotliwość fali nośnej (GHz), fizyczny adres MAC karty sieciowej, napięcie elektryczne prądu stałego oraz długość fali świetlnej w kablu
+c) Typ kodowania liniowego (np. Manchester), fizyczna szerokość pasma miedzi wyrażana w hercach (Hz) oraz kierunkowość anteny nadawczej
+:: 
+
+[Q] Rozwiń skrót NAT i go opisz?
+>>>a) Network address translation - translacja adresów warstwy III - tłumaczenie z adresu na adres pomiędzy sieciami LAN/WLAN.
+b) Network automation toolkit - otwarty zestaw skryptów Pythona służący do automatycznego generowania konfiguracji VLAN na przełącznikach warstwy II
+c) Node authentication technology - system sprawdzania spójności światłowodów w technologii GPON poprzez wysyłanie impulsów pomiarowych OTDR
+d) Neighbor advertisement token - pole w nagłówku protokołu IPv6 odpowiedzialne za zapobieganie pętlom routingu w sieciach szkieletowych OSPF
+::
+
+[Q] Czym jest dd-wrt?
+>>>a) Oprogramowanie open-source, bazujące na Linux, do urządzeń sieciowych, które pozwala implementować rozwiązania ze sprzętu klasy korporacyjnej na sprzętach klasy budżetowej.
+b) to fizyczny kabel magistrali SCSI służący do szeregowego łączenia napędów taśmowych bezpośrednio z płytą główną serwera
+c) to zapytanie relacyjne w bazie danych PostgreSQL które automatycznie konwertuje pliki graficzne na format tekstowy
+d) to funkcja w języku JavaScript służąca do asynchronicznego czyszczenia pamięci podręcznej przeglądarki podczas renderowania obiektów 3D
+:: 
+
+[Q] Za co odpowiada pre i postrouting?
+>>>a) PREROUTING odpowiada za modyfikację pakietów przed podjęciem decyzji o routingu (np. DNAT / przekierowanie portów), a POSTROUTING za modyfikację pakietów po podjęciu decyzji o routingu, tuż przed ich wysłaniem w świat
+b) PREROUTING służy do sprawdzania spójności bazy danych adresów fizycznych MAC, natomiast POSTROUTING odpowiada za sprzętową fragmentację ramek w standardzie OFDM
+c) PREROUTING to proces rezerwacji czasu antenowego za pomocą mechanizmu RTS/CTS, a POSTROUTING to metoda wykrywania anomalii wydajności na punktach dostępowych
+d) PREROUTING odpowiada za automatyczne przydzielanie adresów IP przez serwer DHCP, a POSTROUTING za natychmiastowe czyszczenie wpisów w lokalnej pamięci podręcznej DNS
+:: 
+
+[Q] Co to interfejs wirtualny?
+>>>a) Interfejs wirtualny to stworzony programowo logiczny punkt dostępu do sieci, który nie odpowiada bezpośrednio żadnemu fizycznemu portowi w urządzeniu. 
+b)to fizyczna obudowa przełącznika sieciowego zintegrowana z antenami MIMO pracującymi wyłącznie w standardzie ad-hoc
+c) to sprzętowy element karty sieciowej odpowiedzialny za mechaniczną zmianę szerokości kanału z 20Mhz na 40Mhz w pasmie 2,4Ghz
+:: 
+
+[Q] Jakie protokoły warstwy aplikacji służą do konfiguracji dd-wrt?
+>>>a) SSH, HTTPS, TELNET
+b) ICMP, ARP, IGMP
+c) DHCP, DNS, NTP 
+d) BGP, OSPF, RIP
+:: 
+
+[Q] Jakie są charakterystyczne cechy bezprzewodowych interfejsów wirtualnych?
+>>>a) Są tylko i wyłącznie programowe (software'owe), dzielą z fizyczną kartą ten sam kanał radiowy, ale posiadają własne, unikalne adresy MAC i mogą pełnić różne role sieciowe jednocześnie
+b) Posiadają dedykowane, sprzętowe układy wzmacniaczy sygnału i pozwalają na jednoczesną pracę każdego wirtualnego interfejsu na zupełnie innych częstotliwościach radiowych
+c) Są automatycznie usuwane przez mechanizm Airtime Fairness (ATF) w sytuacji, gdy w sieci bezprzewodowej pojawia się problem ukrytego węzła
+d) Wymagają fizycznego mostkowania za pomocą zewnętrznych kabli magistrali SCSI, aby system operacyjny mógł zmapować ich parametry w tabeli routingu OSPF
+::
+
+[Q] Jakie są ograniczenia bezprzewodowych interfejsów wirtualnych?
+>>>a) liczba interfejsów wirtualnych w ramach jednego interfejsu fizycznego, konieczność pracy na tym samym kanale radiowym oraz ograniczenia sterownika co do dopuszczalnych kombinacji trybów pracy (np. AP i Station)
+b) konieczność stosowania osobnych anten nadawczo-odbiorczych dla każdego wirtualnego identyfikatora SSID oraz sprzętowe blokowanie szyfrowania WPA3
+c) całkowity zakaz przesyłania pakietów rozgłoszeniowych (Broadcast) oraz wymóg stosowania protokołu routingu dynamicznego OSPF do komunikacji między nimi
+d) sztywne ograniczenie wielkości ramek danych do maksymalnie 64 bajtów, co uniemożliwia przesyłanie pakietów protokołu IPv6 w warstwie trzeciej
+::
+
+[Q] Ile interfejsów wirtualnych można zdefiniować dla jednego interfejsu sprzętowego?
+>>>a) 16 
+b) 15
+c) 12
+d) 10
+::
+
+[Q] Do czego służy oprogramowanie iperf?
+>>>a) Do monitorowania parametrów sieci, korzystających z UDP/TCP.
+b) do automatycznego przydzielania adresów IP oraz konfiguracji stref odwrotnych w serwerach DNS dla sieci typu ad-hoc
+c) do sprzętowego łamania haseł WPA2 za pomocą słowników online bezpośrednio na kartach sieciowych z antenami MIMO
+::
+
+[Q] Czym jest PTK w WPA/WPA2? 
+>>>a) Unikalny dla każdej asocjacji klucz używany do kodowania danych w sieci dla ruchu typu Unicast.
+b) Klucz grupowy (Group Key), współdzielony przez wszystkie podłączone stacje, służący wyłącznie do szyfrowania ruchu typu Unicast.
+c) Klucz główny (Master Key), wprowadzany przez administratora jako hasło do sieci, z którego bezpośrednio generowane są identyfikatory SSID.
+d) Klucz rozgłoszeniowy, generowany statycznie przez serwer DHCP w celu autoryzacji adresów IP w warstwie trzeciej.
+:: 
+
+[Q] Do czego wkorzystuje się aireplay-ng?
+>>>a) Aby wymusić asocjację, żeby przechwycić 4-way handshake, podczas łamania WEP
+b) Do sprzętowej zmiany szerokości kanału z 20 MHz na 40 MHz w celu eliminacji anomalii wydajności u najwolniejszych klientów
+>>>c) Do packet-injection
+d) Do automatycznego routowania pakietów pomiędzy wirtualnymi interfejsami WLAN przy użyciu protokołu OSP
+::
+
+[Q] Do czego służy GTK
+>>>a) Periodycznie zmieniany, klucz szyfrujący ruch typu Broadcast/Multicast - zmienia się również gdy jakiś użytkownik odłącza się od sieci 
+b) Stały klucz przypisywany sprzętowo do karty sieciowej podczas produkcji, służący do weryfikacji sum kontrolnych ramek OFDM
+c) Klucz generowany dynamicznie przez narzędzie aireplay-ng w celu sztucznego zwiększenia czasu antenowego (Airtime Fairness)
+d) Unikalny klucz sesyjny, używany wyłącznie do szyfrowania bezpośredniego ruchu dwukierunkowego (Unicast) pomiędzy konkretną stacją a AP
+::
+
+[Q] Jak tablice tęczowe przyspieszają łamanie kluczy?
+>>>a) Wykorzystują wcześniej wygenerowane i skompresowane bazy danych zawierające relacje hasło-hash
+b) Sprzętowo modyfikują architekturę układu scalonego karty radiowej, zwiększając liczbę operacji zmiennoprzecinkowych na sekundę (FLOPS) podczas ataku
+c) Automatycznie dzielą 8-cyfrowy kod PIN protokołu WPS na dwie niezależne części, co zmniejsza łączną liczbę kombinacji kryptograficznych do 11 000
+d) Blokują przesyłanie ramek Beacon oraz rozgłoszeniowych kluczy GTK, zmuszając punkt dostępowy do przejścia w tryb uproszczonego kodowania bez soli (SSID)
+::
+
+[Q] Co to WPS
+>>>a) WPS - Wi-Fi Protected Setup - protokół zapewniający dostęp do sieci Wi-Fi z pominięciem uwierzytelnienia WPA, na czas konfiguracji sieci, można używać na przycisk lub na PIN.
+b) WPS - Wi-Fi Protected Security - standard szyfrowania nowej generacji wprowadzony w WPA3, który całkowicie zastępuje klucze PTK oraz PMK na poziomie warstwy fizycznej.
+c) WPS - Wired Preamble Sequence - stała przerwa międzyramkowa w standardzie 802.11a/ac, służąca do sprzętowej rezerwacji czasu antenowego zamiast mechanizmu RTS/CTS.
+d) WPS - Wireless Packet Shaper - podsystem jądra Linux zintegrowany z Traffic Control (tc), automatycznie fragmentujący ramki w celu eliminacji anomalii wydajności.
+::
+
+[Q] Czym jest PMK w WPA/WPA2?
+>>>a) Wspólny dla wszystkich użytkowników klucz, używany do generowania klucza PTK.
+b) Protokół zarządzania energią (Power Management Key), który usypia wirtualne interfejsy WLAN w celu oszczędzania czasu antenowego.
+c) Klucz warstwy fizycznej (Physical Modality Key), który odpowiada za sprzętowe kodowanie symboli OFDM na kanałach 5 GHz.
+d) Dynamiczny klucz sesyjny wstrzykiwany przez narzędzie aireplay-ng podczas ataku deautentykacji w celu przejęcia kontroli nad adresem MAC.
+::
+
+[Q] Jakie są wady korzystania z PIN w WPS
+>>>a) Mało kombinacji znaków
+b) Wymóg przesyłania całego klucza PMK otwartym tekstem
+>>>c) PIN najczęściej napisany na obudowie urządzenia
+d) Automatyczne obniżenie szerokości kanału radiowego
+::
+
+[Q] Wymień 2 funkcje 4-way handshake
+>>>a) Utworzenie unikalnego klucza sesyjnego PTK do szyfrowania ruchu Unicast
+b) Sprzętowa fragmentacja pakietów w celu uniknięcia anomalii wydajności u starszych klientów 802.11a
+>>>c) Potwierdzenie, że obie strony znają klucz PMK oraz bezpieczne przekazanie klucza grupowego GTK
+d) Zmiana szerokości kanału radiowego na wyższym interfejsie wirtualnym z 20 MHz do 80 MHz
+::
+
+[Q] Do czego służy oprogramowanie reaver?
+>>>a) Oprogramowanie do łamania WEP/WPA2 poprzez WPS - program łamie PIN i uzyskuje hasło do sieci
+b) Narzędzie do generowania tablic tęczowych, które przyspiesza łamanie kluczy PTK poprzez sprzętową kompresję funkcji skrótu na karcie sieciowej
+c) Program służący do monitorowania anomalii wydajności i automatycznego izolowania wirtualnych interfejsów radiowych (VIF) w systemie Linux
+d) Narzędzie pakietu aircrack-ng służące wyłącznie do wstrzykiwania pakietów (packet-injection) deautentykacyjnych w celu rozłączenia klientów
+::
+
+[Q] Wymień 2 wady WPA/WPA2
+>>>a) Podatność na offline-owy atak brute-force/słownikowy po przechwyceniu 4-way handshake
+b) Całkowity brak wsparcia dla algorytmu szyfrowania AES-CCMP, co zmusza system do pracy wyłącznie w pasmie 2.4 GHz
+>>>c) Podatność na ataki poprzez dziurawy protokół WPS
+d) Wymóg fizycznego połączenia kablowego z routerem w celu wygenerowania klucza grupowego GTK
+::
+
+[Q] Wymień 2 ataki (1 pasywny i 1 aktywny) na WPA/WPA2
+>>>a) pasywny - za pomocą tablic tęczowych (chodzi o łamanie klucza)
+b) aktywny - Cappucino 
+>>>c) aktywny - Hirte oraz Caffe Latte
+d) pasywny - Gej (chodzi o wkładanie klucza)
+::
+
+[Q] Do czego służy crunch? 
+>>>a) Oprogramowanie służące do generowania niestandardowych słowników haseł (wordlist) na podstawie zadanych szablonów, zestawów znaków oraz długości
+b) Protokół warstwy trzeciej, który automatycznie konfiguruje klucze GTK w celu eliminacji anomalii wydajności na interfejsach wirtualnych
+c) Narzędzie wbudowane w pakiet Aircrack-ng, służące do sprzętowego czyszczenia szumów radiowych w paśmie 5 GHz przed rozpoczęciem wstrzykiwania pakietów
+d) Program przeznaczony do automatycznego łamania 8-cyfrowych kodów PIN w usłudze WPS metodą online brute-force
+::
+
+[Q] Do czego służy pyrit?
+>>>a) Oprogramowanie wykorzystujące moc obliczeniową GPU (kart graficznych) oraz wielordzeniowych procesorów do drastycznego przyspieszenia łamania kluczy WPA/WPA2-PSK poprzez masowe przeliczanie słowników
+b) Narzędzie wbudowane w pakiet Aircrack-ng, służące do pasywnego monitorowania anomalii wydajności i automatycznego wykrywania ukrytych identyfikatorów SSID
+c) Program przeznaczony do automatycznego łamania 8-cyfrowych kodów PIN w usłudze WPS przy użyciu ataków typu Pixie-Dust
+d) Protokół warstwy fizycznej, który odpowiada za sprzętowe szyfrowanie pakietów rozgłoszeniowych GTK bezpośrednio na antenie nadawczej
+::
+
+[Q] Na podstawie czego tworzony jest PMK?
+>>>a) Na podstawie hasła i soli (SSID)
+b) Na podstawie losowych wartości ANonce i SNonce wymienianych w trakcie 4-way handshake
+c) Na podstawie sprzętowych adresów MAC punktu dostępowego oraz stacji klienckiej
+d) Na podstawie algorytmu sprawdzania czystości kanału (DIFS) oraz wielkości progu RTS-Threshold
+::
+
+[Q] Jak przechwycić 4-way handshake 
+>>>a) Trzeba wymusić Reasocjacje za pomocą programu aireplay-ng, a w tle podsłuchiwać pakietów airodump-ng.
+b) trzeba aktywować funkcję routingu dynamicznego na serwerze RADIUS i połączyć anteny MIMO za pomocą kabla szeregowego w standardzie ad-hoc
+c) należy zmienić adresację IP karty sieciowej w warstwie III na statyczną a następnie wysłać zapytanie SQL bezpośrednio do serwera DNS
+d) wystarczy wyłączyć szyfrowanie na przełączniku sieciowym i przesłać tablicę adresów MAC do bazy danych przy użyciu kodu Barkera w pasmie 2,4Ghz
+::
+
+[Q] Co to PEAP
+>>>a) Protected EAP - najbardziej powszechny protokół uwierzytelniania - stanowi dobry kompromis pomiędzy bezpieczeństwem a prostotą utrzymania (certyfikat po stronie serwera, login i hasło po stronie użytkownika)
+b) PEAP to bezprzewodowy standard transmisji ad-hoc realizowany wyłącznie w paśmie 2,4Ghz przy pomocy kodu Barkera i anten kierunkowych MIMO
+c) Protected EAP to otwarty algorytm mapowania tablicy adresów MAC bezpośrednio w bazie danych DNS kontrolera AP w celu wyłączenia uwierzytelniania
+d) to uproszczona odmiana protokołu DHCP działająca w warstwie III która służy do sprzętowego przydzielania adresów IP bez użycia serwera RADIUS
+::
+
+[Q] Co to EAP-MD5
+>>>a) Najstarszy z EAP'owych protokołów uwierzytelniania - nic po stronie serwera, hasło po stronie użytkownika.
+b) EAP-MD5 to zaawansowany protokół warstwy III wymagający dwustronnej autoryzacji certyfikatami X.509 na kontrolerach AP w pasmie 5Ghz
+c) EAP-MD5 to sprzętowy standard modulacji szerokopasmowej realizowany wyłącznie przez anteny kierunkowe MIMO przy użyciu kodu Barkera
+d) To algorytm routingu dynamicznego stosowany w sieciach ad-hoc do automatycznego przesyłania adresów MAC do bazy DNS
+::
+
+[Q] Co to LEAP?
+>>>a) LEAP - Lightweight EAP - stare rozwiązanie firmy Cisco - login i hasło po stronie serwera, login i hasło po stronie użytkownika.                 
+b) LEAP to algorytm routingu dynamicznego działający w warstwie III służący do mapowania adresów MAC bezpośrednio w bazie DNS urządzeń ad-hoc
+c) LEAP to najnowszy standard szyfrowania asymetrycznego oparty na certyfikatach X.509 instalowanych na kontrolerach AP w pasmie 6Ghz
+d) LEAP to sprzętowa technika modulacji cyfrowej łącząca zalety technologii OFDM oraz kodu Barkera dla anten kierunkowych MIMO
+::
+
+[Q] Co to EAP-TLS
+>>>a) Najbezpieczniejsza opcja EAP, korzysta z niej wojsko, banki, certyfikat po stronie serwera, certyfikat po stronie użytkownika, tunel TLS, wymagana infrastruktura utrzymania certyfikatów cyfrowych.
+b) algorytm sprzętowej agregacji portów na przełącznikach sieciowych dedykowany dla nadajników MIMO w pasmie 2,4Ghz
+c) uproszczony protokół uwierzytelniania przesyłający hasło jawnym tekstem w warstwie III bezpośrednio do lokalnej bazy danych DNS
+d) standard bezprzewodowej modulacji szerokopasmowej realizowany w sieciach ad-hoc przy użyciu kodu Barkera bez udziału AP
+::
+
+[Q] Co to EAP-TTLS
+>>>a) Wariancja EAP-TLS - prostrzy autoryzacja od strony użytkownika, poprzez login i hasło do tunelu TLS, po stronie serwera certyfikat cyfrowy.
+b) standard routingu dynamicznego w warstwie III stosowany zamiennie z systemem DSSS do przesyłania pakietów IP w sieciach ad-hoc
+c) sprzętowy algorytm agregacji pasma radiowego łączący pasmo 2,4Ghz oraz 5Ghz za pomocą kodu Barkera bez użycia AP
+d) technika cyfrowego wzmacniania sygnału analogowego realizowana wyłącznie za pomocą anten kierunkowych MIMO i bazy danych DNS
+::
+
+[Q] Co się składa na system RADIUS
+>>>a) Suplikant, Authenticator, Authenticaton Server
+b) serwer DHCP, baza danych DNS oraz lokalna tablica routingu pakietów IP w warstwie III dla pasma 5Ghz
+c) antena kierunkowa MIMO, kodator Barkera oraz sprzętowy kontroler sieci ad-hoc odpowiedzialny za modulację DSSS
+d) translator adresów NAT, publiczny serwer FTP oraz system wykrywania spamu w ramkach zarządzających 802.11
+::
+
+[Q] Jaka jest rola suplikanta w systemie RADIUS
+>>>a) suplikant się uwierzytelnia i uzyskuje dostęp do sieci (albo nie)
+b) suplikant to fizyczna antena kierunkowa MIMO stosowana w standardzie 802.11ac do automatycznego rozpraszania widma kodem Barkera
+c) suplikant to protokół routingu dynamicznego w sieciach ad-hoc służący do przesyłania pakietów IP bezpośrednio do publicznych serwerów DNS w pasmie 2,4Ghz
+d) suplikant to centralna baza danych zainstalowana na serwerze RADIUS która odpowiada za sprzętowe szyfrowanie adresów MAC w warstwie III
+::
+
+[Q] W jakiej warstwie działa IEEE 802.1x i co robi?
+>>>a) W warstwie 2 MAC, defaultowo blokuje port do którego przyłącza się nowy suplikant, jedyne ramki, jakie mogą być przesyłane przed uwierzytelnieniem to ramki EAPOL.
+b) W warstwie III sieciowej, odpowiada za dynamiczny przydział adresów IP oraz automatyczne trasowanie pakietów pomiędzy antenami MIMO w pasmie 2,4Ghz
+c) w warstwie VII aplikacji, służy do mapowania nazw domenowych bezpośrednio w bazie danych serwera DNS dla sieci typu ad-hoc
+d) w warstwie I fizycznej, reguluje dopuszczalną moc nadawania fal radiowych dla standardu 802.11ac i wymusza stosowanie kodu Barkera
+::
+
+[Q] Co to EAPOL i gdzie się pojawia
+>>>a) ramka warstwy 2, standardu 802.1x, występuje pomiędzy suplikantem i authenticatorem, umożliwia uwierzytelnienie.
+b) pakiet warstwy III protokołu routingu dynamicznego występujący pomiędzy serwerem RADIUS a bazą DNS w celu synchronizacji adresów IP
+c) protokół zarządzania zasilaniem w standardzie 802.11ac odpowiedzialny za automatyczne wyłączanie nadajnika AP po wykryciu braku aktywności suplikanta
+d) algorytm szyfrowania sprzętowego stosowany wyłącznie przez anteny MIMO w pasmie 2,4Ghz dla sieci pracujących w trybie ad-hoc
+::
+
+[Q] Kim jest authenticator i jakie jest jego zadanie?
+>>>a) Authenticator to urządzenie warstwy II (AP/SWITCH), które umożliwia kontakt suplikanta z serwerem RADIUS, oraz realizuje blokowanie portu zgodnie z 802.1x
+b) Authenticator to oprogramowanie klienckie instalowane na systemie operacyjnym stacji roboczej służące do generowania sum kontrolnych MD5 w warstwie III
+c) Authenticator to centralna baza danych DNS zlokalizowana w chmurze która dynamicznie przydziela adresy IP dla urządzeń pracujących w trybie ad-hoc
+d) Authenticator to fizyczna antena MIMO odpowiedzialna za sprzętowe szyfrowanie nagłówków ramek 802.11 wyłącznie dla pasma 2,4Ghz
+::
+
+[Q] Co to AAA i co to?
+>>>a) Authentication, Authorization, Accounting, to jest idea zarządzania bezpieczenstwem w sieciach komputerowych.
+b) AAA to technologia modulacji radiowej odpowiedzialna za automatyczne przełączanie szerokości kanału z 20Mhz na 40Mhz w pasmie 2,4Ghz
+c) AAA to protokół synchronizacji czasu w strukturach BSS który przesyła tablice adresów MAC bezpośrednio do publicznych serwerów DNS przy użyciu kodu Barkera
+d) AAA to skrót od Advanced Address Allocation czyli algorytmu warstwy III służącego do sprzętowego trasowania pakietów w sieciach ad-hoc bez udziału AP
+::
+
+[Q] Dlaczego PEAP jest najczęściej używany?
+>>>a) Bo stanowi dobry kompromis pomiedzy kosztem, a bezpieczenstwem (certyfikat po stronie serwera, login i hasło po stronie użytkownika)
+b) bo jest to jedyny protokół w warstwie III który automatycznie podwaja zasięg anten MIMO w pasmie 2,4Ghz bez użycia prądu
+c) Bo jako jedyny standard eliminuje nagłówki ramek 802.11 i pozwala na bezpośrednie przesyłanie adresów MAC do serwerów DNS w sieciach ad-hoc
+d) bo nie wymaga stosowania żadnych mechanizmów kryptograficznych ani uwierzytelniania opierając się na sprzętowej filtracji portów AP
+::
+
+[Q] Czym jest MSCHAP/MSCHAPv2 ? 
+>>>a) To protokoły uwierzytelniania klienta od Microsoft, opierajace się na ideii challenge message, gdzie serwer wysyła ciag znaków, klient odsyła ten ciag zaszyfrowany i pozniej serwer stwierdza czy klient zna hasło czy nie.
+b) to protokoły routingu dynamicznego w warstwie III odpowiedzialne za sprzętowe przełączanie pakietów IP pomiędzy antenami MIMO w sieciach ad-hoc
+c) to bezprzewodowe systemy dystrybucji sygnału radiowego w pasmie 5Ghz które eliminują potrzebę stosowania adresów MAC przez AP
+d) to standardy modulacji szerokopasmowej przesyłające dane w postaci czystego tekstu bezpośrednio do serwerów DNS za pomocą kodu Barkera
+::
+
+[Q] Który EAP jest najbezpieczniejszy i dlaczego?
+>>>a) EAP-TLS jest najbezpieczniejszy, ponieważ używa certyfikatów cyfrowych po obu stronach (serwera i klienta), oraz tworzy tunel TLS.
+b) EAP-MD5 jest najbezpieczniejszy ponieważ wykorzystuje jednokierunkowy algorytm skrótu w pasmie 2,4Ghz bez konieczności tworzenia tunelu w warstwie III
+c) LEAP jest najbezpieczniejszy ponieważ opiera się na dynamicznym szyfrowaniu adresów MAC bezpośrednio przez sprzętowe kontrolery AP sieci ad-hoc
+d) EAP-FAST jest najbezpieczniejszy ponieważ eliminuje potrzebę stosowania jakichkolwiek kluczy kryptograficznych i przesyła dane jawnym tekstem bezpośrednio do serwera DNS
+::
+
+[Q] Dlaczego w sieci bezprzewodowej protokół EAP-MD5 Challenge nie jest używany podczas procesu uwierzytelniania
+>>>a) Ponieważ hash hasła MD5 jest wysyłany w sieci clear textem i bardzo łatwo można go podsłuchać.
+b) ponieważ algorytm MD5 działa wyłącznie w warstwie III modelu osi co uniemożliwia urządzeniom MIMO odczytanie nagłówka pakietu IP
+c) ponieważ EAP-MD5 wymaga do działania fizycznego połączenia kablowego w standardzie 802.3 i nie potrafi przetłumaczyć ramek w pasmie 2,4Ghz
+d) ponieważ EAP-MD5 przesyła dane za pomocą protokołu TACACS+ który generuje zbyt duże opóźnienia radiowe dla sieci typu ad-hoc
+::
+
+[Q] Jakie są serwery AAA inne niż RADIUS? Proszę podać podstawowe różnice między nimi. Czy możliwe jest użycie innych serwerów wraz z protokołem IEEE 802.1x?
+>>>a) Oprócz RADIUS jest jeszcze TACACS+, który korzysta z TCP, całkowicie rozdziela Autoryzacje, Autentykacje i Accounting, szyfruje całe ciało pakietu (całą transmisje).
+b) jedynym serwerem AAA jest TACACS który przesyła dane bez użycia warstwy transportowej TCP/UDP i służy wyłącznie do dynamicznego przydzielania pasma dla anten MIMO
+c) oprócz RADIUS jest jeszcze protokół DHCP który rozdziela procesy AAA w warstwie III za pomocą pakietów UDP i szyfruje nagłówki ramek 802.11 dla pasma 2,4Ghz
+d) alternatywą dla RADIUS jest protokół SNMP który pozwala na realizację standardu IEEE 802.1x w sieciach ad-hoc poprzez mapowanie adresów MAC bezpośrednio w bazie DNS
+::
+
+[Q] Jak wymusić na przełączniku Cisco, że niezależnie od prób uwierzytelnienia klienta - port zawsze będzie w stanie nieuwierzytelnionym.
+>>>a) Konfigurując na konkretnym if: dot1x port-control force-unauthorized
+b) konfigurując na interfejsie komendę authentication host-mode multi-auth która wymusza automatyczne odrzucanie wszystkich pakietów IP w warstwie III
+c) ustawiając globalnie funkcję ip arp inspection trust która powoduje permanentne blokowanie tablicy adresów MAC dla urządzeń ad-hoc
+d) wpisując na konkretnym if polecenie switchport mode access vlan 999 w celu sprzętowego wyłączenia nadajnika radiowego dla pasma 2,4Ghz
+::
+
+[Q] Jak skonfigurować przełącznik, aby wymuszał okresowe ponowne uwierzytelnianie klienta? Proszę podać i omówić odpowiednią składnię poleceń. Proszę rozważyć, w jakich sytuacjach taka konfiguracja może być przydatna?
+>>>a) Konfigurując na konkretnym if: authentication periodic
+b) konfigurując na porcie polecenie ip dhcp snooping limit rate 3600 które blokuje pakiety uwierzytelniające w warstwie III po przekroczeniu limitu czasu
+c) wpisując globalnie komendę switchport port-security aging time 60 w celu sprzętowego czyszczenia tablicy adresów MAC co każdą minutę
+d) ustawiając na interfejsie vlan funkcję crypto isakmp policy która wymusza resetowanie kluczy szyfrujących TCP/UDP dla pasma 2,4Ghz
+::
+
+[Q] Jakie szerokości kanału są dostępne w standardzie 802.11ac?
+>>>a) dla 5Ghz: 20Mhz, 40Mhz, 80Mhz, 160Mhz
+b) dla 5Ghz oraz nowego pasma 6Ghz: dostępne są tylko i wyłącznie wąskie kanały 5Mhz oraz 10Mhz zaprojektowane dla urządzeń IoT
+c) dla 2,4Ghz: 20Mhz oraz 40Mhz, natomiast dla pasma 5Ghz wprowadzono wyłącznie jeden stały kanał o szerokości 320Mhz
+d) dla wszystkich pasm częstotliwości: standard 802.11ac nie definiuje szerokości kanału, ponieważ opiera się na dynamicznym przeskoku częstotliwości FHSS
+::
+
+[Q] Jakie są możliwe konfiguracje w Wi-Fi
+>>>a) IBSS, BSS, ESS
+b) RIP, OSPF, BGP
+c) HTTP, FTP, SMTP
+d) LAN, MAN, WAN
+::
+
+[Q] Co to OFDM?
+>>>a) Rodzaj modulacji, rozbijający szybką transmisje na wiele wolniejszych, równoległych transmisji, przeniesionych do ortogonalnych względem siebie częstotliwości nośnych.
+b) OFDM to technika cyfrowego wzmacniania sygnału analogowego realizowana wyłącznie za pomocą anten kierunkowych MIMO w paśmie 2,4Ghz
+c) OFDM to protokół szyfrowania klucza radiowego w warstwie III stosowany zamiennie z systemem DSSS w sieciach typu ad-hoc
+d) OFDM to sprzętowy algorytm agregacji portów w przełącznikach sieciowych łączących kontrolery AP z siecią szkieletową
+::
+
+[Q] Czy jeśli urządzenie ma kanał o szerokości 80 MHz to może pracować z urządzeniem o typie modulacji DSSS?
+>>>a) tak, ale urządzenie o szerokości kanału 80 MHz musi przejść w tryb kompatybilności wstecznej na pasmo 2,4 GHz i zredukować szerokość kanału do 20 MHz
+b) tak, ponieważ modulacja DSSS automatycznie multiplikuje szerokość pasma radiowego do wartości 80 MHz za pomocą ramek kontrolnych w warstwie III
+c) nie, ponieważ standard DSSS wymaga światłowodowego połączenia synchronicznego i nie obsługuje transmisji radiowych w topologii ESS
+d) nie, gdyż modulacja DSSS działa wyłącznie na przełącznikach warstwy II obsługujących sprzętowe tagowanie ramek VLAN metodą 802.1Q
+::
+
+[Q] Czym jest ad-hoc i czym się charakteryzuje?
+>>>a) ad-hoc to bezprzewodowa sieć pomidzy urządzeniami (kartami sieciowymi) bez obecności AP.
+b) ad-hoc to tryb pracy w którym stacje klienckie nawiązują połączenie tylko i wyłącznie z serwerem DHCP za pomocą protokołu WDS
+c) ad-hoc to odmiana infrastruktury BSS w której funkcja AP jest emulowana programowo w warstwie III przez centralną bazę adresów MAC
+d) ad-hoc to sieć szkieletowa łącząca wiele AP za pomocą światłowodu pracująca wyłącznie w warstwie I modelu osi
+::
+
+[Q] 802.11n jakie nowości i usprawnienia?
+>>>a) 802.11n wprowadziło MIMO, działało na 2,4Ghz: 20 i 40Mhz, oraz na 5Ghz: 20 i 40Mhz.
+b) 802.11n wprowadziło technologię OFDMA oraz modulację 1024-QAM co pozwoliło na podział jednego kanału radiowego na podkanały dla wielu użytkowników jednocześnie
+c) 802.11n zlikwidowało całkowicie pasmo 2,4Ghz i jako pierwszy standard w historii wprowadziło obsługę kanałów o szerokości 160Mhz wyłącznie w pasmie 5Ghz
+d) 802.11n wprowadziło sprzętowe trasowanie pakietów w warstwie III pomiędzy AP a serwerem radius za pomocą protokołu uwierzytelniania WPA3
+::
+
+[Q] Czy OFDM dogada się z DSSS?
+>>>a) nie, ponieważ urządzenia DSSS i OFDM nie potrafią bezpośrednio ze sobą rozmawiać i dekodować wzajemnych transmisji
+b) tak, pod warunkiem że oba urządzenia są podłączone do tego samego serwera DNS i mają przypisane statyczne adresy MAC w tablicy ARP
+c) nie, ponieważ standard OFDM wymaga do działania kabli światłowodowych w technologii GPON i nie potrafi nadawać sygnału w topologii gwiazdy
+d) tak, ponieważ protokół routingu dynamicznego OSPF automatycznie konwertuje ramki OFDM na pakiety IP obsługiwane przez standard DSSS
+::
+
+[Q] Po co stosuje się RTS/CTS w ad-hoc
+>>>a) RTS/CTS wykorzystuje się w ad-hoc dla dużych ramek (RTS/CTS Threshold) po to aby rozwiązać problem ukrytego węzła i uniknąć kolizji pakietów w eterze poprzez rezerwację kanału radiowego
+b) RTS/CTS wykorzystuje się w ad-hoc dla dużych ramek (RTS/CTS Threshold) po to aby serwer DHCP mógł automatycznie mapować adresy IP bezpośrednio w tablicy routingu BGP
+c) RTS/CTS wykorzystuje się w ad-hoc dla dużych ramek (RTS/CTS Threshold) po to aby wymusić sprzętowe szyfrowanie bazy danych DNS na poziomie przełączników warstwy III
+d) RTS/CTS wykorzystuje się w ad-hoc dla dużych ramek (RTS/CTS Threshold) po to aby przesyłać ramki Ethernet za pomocą światłowodów jednomodowych z pominięciem kart sieciowych
+:: Kolizja im większej ramki - tym kosztowniejsza retransmisja
+
+[Q] Czym charakteryzuje się sieć WLAN w trybie ad-hoc
+>>>a) Tym że nie ma udziału AP
+b) tym że przydzielanie adresów IP odbywa się wyłącznie za pomocą centralnego serwera DHCP zainstalowanego na dedykowanym kontrolerze AP
+c) Tym że zasięg transmisji radiowej jest nieograniczony dzięki automatycznemu mostkowaniu ramek w pasmie 5Ghz przez serwery DNS
+d) tym że wymaga połączenia kablowego pomiędzy wszystkimi stacjami klienckimi w celu synchronizacji tablicy adresów MAC w warstwie
+::
+
+[Q] Do czego służy i jaki wpływ ma parametr Fragmentation Threshold? 
+>>>a) Paramter określający rozmiar ramki w bajtach, od ktorego ramka bedzie dzielona na fragmenty.
+b) Fragmentation Threshold to parametr określający maksymalną liczbę pakietów IP jakie router może odrzucić w ciągu jednej sekundy w przypadku przeciążenia bufora w warstwie III
+c) Fragmentation Threshold to algorytm stosowany wyłącznie w pasmie 5Ghz służący do automatycznego dzielenia szerokości kanału 80Mhz na cztery niezależne strumienie MIMO
+d) Fragmentation Threshold to unijny standard określający dopuszczalny poziom tłumienia sygnału radiowego przez ściany żelbetowe przy nadawaniu z maksymalną mocą 100mW
+::
+
+[Q] Co to DSSS i w jakich standardach występuje?
+>>>a) DSSS - Direct Sequence Spread Spectrum  - rozpraszanie widma jakimś kodem pseudolosowym np. Barkera. Dotyczy 802.11 Legacy oraz 802.11b.
+b) DSSS to protokół dynamicznego wyboru kanału radiowego w pasmie 5Ghz stosowany w standardach 802.11ac oraz 802.11ax w celu unikania radarów pogodowych
+c) DSSS to system szyfrowania ramek zarządzających w warstwie III wprowadzony jako obowiązkowy element zabezpieczeń WPA3 dla standardu 802.11be
+d) DSSS to technika agregacji wielu kanałów o szerokości 20Mhz w jeden superkanał stosowana wyłącznie w sieciach ad-hoc w pasmie 6Ghz
+::
+
+[Q] Czy OFDM i MIMO mogą pracować razem w jednej sieci ad-hoc?
+>>>a) Tak, MIMO to odbieranie i wysyłanie wieloma zestawami anten, OFDM to modulacja
+b) Tak, pod warunkiem że modulacja OFDM zostanie całkowicie wyłączona w celu synchronizacji bazy danych serwera DNS przy użyciu adresów MAC
+c) nie, ponieważ technologia MIMO wymaga do działania wyłącznie przewodowych przełączników warstwy III i nie potrafi nadawać sygnału radiowego
+d) nie, ponieważ standard OFDM automatycznie blokuje działanie portów w przełącznikach sieciowych i uniemożliwia realizację routingu BGP
+::
+
+[Q] Czy ad-hoc może działać przy OFDM i DSSS
+>>>a) Urządzenia będą działać (karty sieciowe rozgłoszą SSID), natomiast komunikacja pomiędzy nimi nie będzie możliwa (niekompatybilność warstwy fizycznej)
+b) tak, pod warunkiem że sieć ad-hoc zostanie podłączona do światłowodu GPON za pomocą przełącznika warstwy III z obsługą tagowania VLAN
+c) Jednoczesne uruchomienie tych dwóch technologii powoduje sprzętowe usunięcie lokalnej bazy danych serwera DNS
+d) tak, ponieważ protokół routingu dynamicznego OSPF automatycznie konwertuje sygnał OFDM na pakiety IP zrozumiałe dla standardu DSSS
+::
+
+[Q] Kiedy używać RTS/CTS
+>>>a) Wtedy kiedy występuje ryzyko ukrytego węzła w sieci - kiedy jedno urządzenie nie "widzi" bezpośrednio drugiego urządzenia zdolnego nadawać
+b) wyłącznie podczas konfiguracji statycznego routingu BGP na przełącznikach warstwy II w celu zwiększenia prędkości przesyłania plików tekstowych
+>>>c) Dla dużych pakietów (RTS Threshold)
+d) w sytuacji gdy serwer DHCP nie posiada wolnych adresów IP w puli i zachodzi potrzeba automatycznego zresetowania lokalnej bazy danych DNS
+::
+
+[Q] Czym jest OFDM i jakie standardy go wykorzystują
+>>>a) OFDM to modulacja i występuje on od standardu 802.11a
+b) OFDM to system sprawdzania spójności światłowodów GPON wykorzystujący wyłącznie adresowanie fizyczne MAC w warstwie II, występuje od 802.11ac
+c) OFDM to sprzętowy standard zasilania POE stosowany od pierwszej wersji kabli koncentrycznych w topologii magistrali, występuje od 802.11ax
+d) OFDM to protokół routingu zewnętrznego BGP służący do automatycznego czyszczenia pamięci podręcznej serwerów DNS, występuje od 802.11a
+::
+
+[Q] Co to BSS i IBSS
+>>>a) BSS to sieć z jednym AP, a IBSS to sieć bez żadnego AP (ad-hoc)
+b) BSS to protokół szyfrowania danych w warstwie III, a IBSS to system dynamicznego przydzielania adresów IP przez AP
+c) BSS to sieć działająca wyłącznie w pasmie 2,4Ghz, a IBSS to sieć obsługująca pasmo 5Ghz oraz technologię MIMO
+d) BSS to sieć z wieloma AP połączonymi przewodowo, a IBSS to sieć wykorzystująca bezprzewodowy system dystrybucji WDS
+::
+
+[Q] Czy dwa różne urządzenia w standardach 802.11a i 802.11ac mogą pracować na tym samym kanale 
+radiowym?
+>>>a) Tak, obydwa te standardy działają w oparciu o OFDM oraz na 5Ghz
+b) Tak, ponieważ standard 802.11ac automatycznie konwertuje sygnał cyfrowy na modulację DSSS w celu zachowania pełnej zgodności w paśmie 2,4 GHz
+c) Nie, ponieważ standard 802.11ac wymaga do działania wyłącznie technologii OFDMA, która fizycznie uniemożliwia odbiór starszych ramek OFDM
+d) Nie, ponieważ urządzenia w standardzie 802.11a pracują na stałej szerokości kanału 40 MHz, co wywołuje permanentne kolizje z kanałami 802.11ac
+::
+
+[Q] Jaki jest wpływ RTS-Threshold w WLAN
+>>>a) Próg wielkości pakietu, wyrażany w bajtach, od którego następuje rezerwacja łącza RTS/CTS - rozwiązuje to problem ukrytego węzła
+b) Maksymalna liczba retransmisji pakietu w warstwie drugiej, po przekroczeniu której ramka jest dzielona na mniejsze części w procesie fragmentacji
+c) Czas wyrażany w mikrosekundach, przez który karta sieciowa musi badać czystość kanału radiowego (DIFS) przed przejściem w tryb nadawania
+d) Minimalny poziom siły sygnału (wyrażany w dBm), poniżej którego punkt dostępowy ignoruje zapytania stacji klienckich, chroniąc sieć przed anomalią wydajności
+::
+
+[Q] Czym jest anomalia wydajności?
+>>>a) Anomalia wydajności występuje, gdy mamy w sieci jakieś przestarzałe urządzenie, które osiąga bardzo dużo niższe przepustowości od pozostałych urządzeń - przez co całkowita efektywność i wydajność sieci jest taka jak wydajność tego najsłabszego ogniwa
+b) Anomalia wydajności to zjawisko nagłego spadku przepustowości sieci na skutek nakładania się faz fal radiowych (fading), co powoduje całkowite wygaszenie sygnału docierającego do punktu dostępowego
+c) Anomalia wydajności to stan, w którym urządzenia z powodu zbyt niskiego progu RSSI bez przerwy przełączają się między standardami DSSS i OFDM, generując pętlę w warstwie drugiej
+d) Anomalia wydajności występuje wtedy, gdy mechanizm RTS/CTS rezerwuje pasmo dla zbyt małych ramek danych, przez co czas oczekiwania w kolejce NAV rośnie wykładniczo dla wszystkich stacji
+::
+
+[Q] Co to MIMO i w jakich standardach pracuje?
+>>>a) MIMO to technologia wysyłania oraz odbierania sygnałów radiowych wieloma zestawami anten jednocześnie. MU MIMO - pozwala "rozmawiać" jakiemuś urządzeniu z paroma innymi urządzeniami jednocześnie.
+b) MIMO to algorytm przełączania częstotliwości w warstwie III stosowany w sieciach ad-hoc mający na celu zapobieganie interferencjom od radarów
+c) MIMO to protokół autoryzacji adresów mac w sieciach vanet pozwalający na jednoczesne szyfrowanie strumienia danych dla jednego odbiorcy
+d) MIMO to technologia modulacji jednokanałowej stosowana wyłącznie w standardzie 802.11b służąca do zwiększania zasięgu fal w pasmie 2,4Ghz
+::
+
+[Q] Wymień 3 typy topologii Ad-hoc
+>>>a) IBSS (Independent Basic Service Set / klasyczna P2P), MANET (Mobile Ad-hoc Network / sieci ruchome) oraz VANET (Vehicular Ad-hoc Network / sieci pojazdowe).
+b) PAN, LAN oraz WAN które określają zasięg terytorialny radiowych sieci stałych bez możliwości przemieszczania się węzłów
+c) infrastructure, roaming oraz bridging które definiują sposoby przełączania pakietów w warstwie III modelu osi
+d) BSS, ESS oraz WDS które stanowią podstawę konfiguracji infrastrukturalnej z wykorzystaniem centralnego punktu dostępowego
+::
+
+[Q] Kiedy zmiana parametrów RTS/CTS Fragmentation Threshold nam pomaga? 
+>>>a) Kiedy mamy ukryty węzeł w sieci, oraz chcemy nie narażać odpowiednio dużych pakietów na kolizje, które prowadzą do kosztownych retransmisji.
+b) Kiedy chcemy wyeliminować zjawisko anomalii wydajności (Performance Anomaly) poprzez wymuszenie na stacjach klienckich równego dostępu do czasu antenowego (Airtime Fairness)
+c) Kiedy w sieci występuje problem odkrytego węzła (Exposed Node Problem) i chcemy zmusić stacje do jednoczesnego nadawania w celu podwojenia przepustowości pasma
+d) Kiedy chcemy skrócić czas potrzebny na badanie czystości kanału przed transmisją (DIFS/SIFS) w celu zmniejszenia opóźnień w sieciach o wysokiej gęstości urządzeń
+::
+
+[Q] Jaka jest częstotliwość na kanale 36? Które standardy tam pracują?
+>>>a) kanał 36 to 5Ghz, czyli fc = 5Ghz + n * 5Mhz , jak n = 36 to fc = 5,18 Ghz. Mogą tam pracować standardy: 802.11a, 802.11n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6) oraz 802.11be (Wi-Fi 7)
+b) kanał 36 to podstawowy kanał w nowym pasmie 6Ghz o częstotliwości środkowej 6,18Ghz wprowadzony na potrzeby komunikacji urządzeń w standardzie 802.11ax
+c) kanał 36 należy do pasma 2,4Ghz i ze względu na przesunięcie fazowe mogą na nim pracować wyłącznie starsze standardy bezprzewodowe takie jak 802.11b oraz 802.11g
+d) kanał 36 to pasmo 5Ghz o częstotliwości 5,36Ghz na którym ze względu na wymogi prawne DFS dopuszczony jest ruch wyłącznie dla urządzeń typu ad-hoc
+::
+
+[Q] Jakie są korzyści i potencjalne problemy wynikające z poszerzenia pasma z 20 MHz do 40 MHz
+>>>a) większa przepustowość
+b) mniejsza przepustowość 
+>>>c) więcej retransmisji
+>>>d) bardziej zaszumiony sygnał
+>>>e) większe ryzyko interfernecji z innymi urządzeniami
+::
+
+[Q] Czym różni się AP od routera?
+>>>a) AP działa w warstwie II (Bridging), Router działa w wartswie III (Routing)
+b) ap działa w warstwie I wzmacniając czysty sygnał analogowy, natomiast router pracuje w warstwie II zajmując się przełączaniem ramek ethernet na podstawie tablicy adresów MAC
+c) AP zarządza wyłącznie ruchem w pasmie 2,4Ghz, podczas gdy router jest urządzeniem przeznaczonym do obsługi wyższych częstotliwości takich jak 5Ghz oraz 6Ghz
+d) ap wymaga fizycznego połączenia z serwerem DNS w celu translacji adresów, a router wykonuje mapowanie ramek 802.11 na standard 802.3 w sposób całkowicie sprzętowy
+::
+
+[Q] Czym jest WDS ?
+>>>a) Wireless distribution system - bezprzewodowe połączenie pomiedzy AP, pozwalające zwiększyć pokrycie danej sieci - warstwa II.
+b) Wireless Data Security - standard szyfrowania ramek zarządzających w sieciach ad-hoc, operujący w warstwie III.
+c) Wireless Discovery System - protokół służący do automatycznego wykrywania i autoryzacji nowych stacji klienckich przez kontroler WLAN.
+d) Wired Domain Service - usługa sieciowa mapująca adresy MAC punktów dostępowych na adresy IP w sieci szkieletowej.
+::
+
+[Q] Co to DFS i do czego służy
+>>>a) Dynamic Frequency Selection - głównie służy do dynamicznego przełączania kanałów - tak żeby transmisja nie interferowała z sygnałami np. radarów wojskowych.
+b) Distributed Frequency System - mechanizm w standardzie 802.11, służący do automatycznego zwiększania mocy anteny w przypadku wykrycia martwych stref zasięgu.
+c) Dynamic Fragment Service - protokół warstwy II odpowiedzialny za dynamiczne dobieranie wartości parametru Fragmentation Threshold w zależności od szumu radiowego.
+d) Dual Frequency Standard - technologia pozwalająca na jednoczesne przesyłanie tego samego strumienia danych na częstotliwości 2,4 GHz oraz 5 GHz w celu eliminacji zakłóceń.
+::
+
+[Q] jakie jest podstawowe pasmo w 802.11n ?
+>>>a) 20 Mhz, zarówno dla 2,4Ghz i dla 5Ghz
+b) 40 MHz, ale wyłącznie dla częstotliwości 5 GHz, podczas gdy dla 2,4 GHz podstawą jest 10 MHz.
+c) 80 MHz, ze względu na domyślne stosowanie technologii agregacji przestrzennej MIMO w pasmie 5 GHz.
+d) 22 MHz, co wynika z bezpośredniej kompatybilności wstecznej ze starszym standardem 802.11b (DSSS).
+::
+
+[Q] Czym jest Repeater i w jakiej warstwie pracuje?
+>>>a) Repeater to jest po prostu wzmacniacz sygnału - działa w warstwie I.
+b) Repeater to urządzenie przekierowujące pakiety na podstawie tablicy routingu – działa w warstwie III (sieciowej)
+c) Repeater to inteligentny punkt dostępowy filtrujący ruch na podstawie adresów MAC – działa w warstwie II (łącza danych)
+d) Repeater to programowy translator protokołów bezprzewodowych – działa w warstwie VII (aplikacji).
+::
+
+[Q] Co to TPC i po co się go używa?
+>>>a) Transmitter Power Control - standard, który mówi, że urządzenia transmisji bezprzewodowej (nadajniki) powinny nadawać sygnał z minimalną możliwą mocą. Minimalizuje to ryzyko interferencji. 
+b) Transmission Priority Control - protokół warstwy II odpowiedzialny za nadawanie priorytetów pakietom głosowym VoIP w sieciach ad-hoc
+c) Tunneling Protocol Configuration - algorytm automatycznie szyfrujący nagłówki ramek zarządzających w standardzie Wi-Fi 6
+d) Thermal Protection Control - zabezpieczenie sprzętowe wyłączające kartę sieciową w przypadku przekroczenia krytycznej temperatury układu scalonego
+::
+
+[Q] Na jakiej częstotliwości pracuje kanał 11 i jakie standardy IEEE 802.11 tam mogą pracować? 
+>>>a) kanał 11 to pasmo 2,4Ghz. fc = 2,407Ghz + n * 5Mhz, jak n = 11, to fc = 2,462Ghz
+b) kanał 11 to pasmo 5Ghz o częstotliwości środkowej 5,055Ghz na którym mogą pracować wyłącznie standardy 802.11a oraz 802.11ac
+c) kanał 11 należy do pasma 2,4Ghz, ale ze względu na przepisy prawne w europie został całkowicie wyłączony z użytku dla standardów 802.11g oraz 802.11n
+d) kanał 11 to pasmo 6Ghz wprowadzone dopiero w standardzie 802.11be w celu eliminacji interferencji ze starszymi sieciami bezprzewodowymi
+::
+
+[Q] W której warstwie działa AP i dlaczego ?
+>>>a) w warstwie II, zamienia pakiety sieci przewodowej na pakiety sieci bezprzewodowej LAN -> WLAN, Ethernet -> Wi-Fi
+b) w warstwie I, ponieważ zajmuje się wyłącznie modulacją sygnału radiowego i nie analizuje adresów fizycznych MAC podłączonych urządzeń
+c) w warstwie III, ponieważ punkt dostępowy musi analizować nagłówki pakietów IP w celu routowania ruchu pomiędzy siecią bezprzewodową a internetem
+d) w warstwie IV, ponieważ zarządza portami TCP/UDP urządzeń klienckich w celu zapewnienia poprawnej kontroli przepływu danych w paśmie 2,4Ghz
+::
+
+[Q] Co oznacza skrót MCS
+>>>a) Modulation and Coding Scheme, to zestaw modulacji, kodowania, oraz strumieni przestrzennych, urządzenie komunikacji bezprzewodowej korzysta z takiego zestawienia i przełącza się np. z 16-QAM na 64-QAM, jeśli parametry transmisji są lepsze (bo np. bliżej stoimy)
+b) maximum channel speed, czyli wskaźnik określający maksymalną teoretyczną prędkość pobierania danych jaką karta sieciowa może osiągnąć w idealnych warunkach na kanale 40Mhz
+c) mobile communication standard, to protokół odpowiedzialny za płynne przełączanie urządzeń przenośnych pomiędzy pasmem 2,4Ghz a 5Ghz podczas poruszania się po obiekcie
+d) multi carrier system, to sprzętowy moduł w routerach standardu 802.11n pozwalający na jednoczesne nadawanie sygnału na trzech niezależnych częstotliwościach nośnych
+::
+
+[Q] Czym się różni DS od WDS ?
+>>>a) DS to przewodowy system dystrybucji, WDS to bezprzewodowy system dystrybucji.
+b) DS to system szyfrowania danych za pomocą klucza statycznego, natomiast wds to nowszy standard zabezpieczeń dynamicznych wprowadzony w Wi-Fi 5
+c) ds odpowiada za komunikację urządzeń w paśmie 2,4Ghz, podczas gdy wds jest protokołem przeznaczonym wyłącznie do zarządzania ruchem w paśmie 5Ghz
+d) ds to topologia sieci bezprzewodowej typu ad-hoc, a wds to odmiana topologii infrastruktury wykorzystująca centralny kontroler w warstwie III
+::
+
+[Q] Co bardziej się opłacało na labie 6: 40 MHz czy 2 x 20 MHz?
+>>>a) bardziej opłacało się 2 x 20 MHz, ponieważ w zatłoczonym środowisku laboratoryjnym węższe kanały zapewniały większą odporność na zakłócenia od sąsiednich stanowisk i stabilniejszą transmisję
+b) bardziej opłacało się 40 MHz, ponieważ ta szerokość kanału automatycznie wymusza sprzętowe szyfrowanie bazy danych DNS na routerach brzegowych
+c) bardziej opłacało się 40 MHz, ponieważ szeroki kanał jest wymagany przez protokół routingu dynamicznego OSPF do mapowania adresów fizycznych MAC
+d) bardziej opłacało się 2 x 20 MHz, gdyż taka konfiguracja pozwala na przesyłanie zasilania POE bezpośrednio przez światłowody jednomodowe
+::
+
+[Q] Która sieć ad-hoc ma największą i najniższą wydajność?
+>>>a) najwyższą wydajność mają sieci ad-hoc o stabilnej strukturze (np. stacjonarne sieci czujników - SPIN / SANET / WSN), natomiast najniższą sieci o bardzo wysokiej mobilności węzłów (np. VANET/FANET), gdzie ruch urządzeń stale zrywa ścieżki routingu
+b) najwyższą wydajność mają sieci ad-hoc automatycznie czyszczące tablice ARP, a najniższą sieci realizujące szyfrowanie bazy danych na przełącznikach warstwy II
+c) najwyższą wydajność mają sieci ad-hoc oparte na protokole routingu zewnętrznego BGP, a najniższą sieci filtrujące pakiety przez reguły zapory sieciowej IPtables
+d) najwyższą wydajność mają sieci ad-hoc zasilane technologią POE, a najniższą sieci przesyłające zapytania DNS przez kable magistrali SCSI
+::
+
+[Q] Jakie metody można zastosować, aby rozwiązać problemy z anomaliami wydajności w sieciach bezprzewodowych?
+>>>a) Zastosować mechanizm Airtime Fairness (ATF) dzielący czas antenowy równo pomiędzy stacje lub ustawić minimalny próg prędkości (Data Rate) odcinający najwolniejszych klientów
+b) Wdrożyć protokół routingu dynamicznego RIP w celu automatycznego czyszczenia pamięci podręcznej lokalnych serwerów DNS
+c) Skonfigurować reguły zapory sieciowej IPtables tak aby wymusić sprzętowe mapowanie adresów fizycznych MAC w warstwie III
+d) Wymienić przewody magistrali SCSI na światłowody jednomodowe zasilane bezpośrednio technologią POE
+::
+
+[Q] Które pasmo częstotliwości jest lepsze do stworzenia sieci ad-hoc (2,4 czy 5 GHz)? Dlaczego?
+>>>a) 5Ghz - zazwyczaj urządzenia sieci ad-hoc są blisko siebie, w jednym pomieszczeniu, w sieci 5Ghz jest mniej interferencji międzykanałowych (skoki co 4 kanały), oraz zewnętrznych np. z Bluetooth albo kuchenek mikrofalowych.
+b) 5Ghz - ponieważ wyższa częstotliwość fali radiowej całkowicie eliminuje problem ukrytej stacji w topologii MANET bez konieczności stosowania mechanizmu RTS/CTS
+c) 2,4Ghz - ponieważ niższa częstotliwość fali pozwala na automatyczną agregację do 8 strumieni MIMO co drastycznie zwiększa przepustowość sieci typu karta-karta
+d) 5Ghz - ponieważ to pasmo radiowe jako jedyne w standardzie 802.11 obsługuje sprzętową fragmentację ramek za pomocą protokołu TPC
+::
+
+[Q] Jakie są charakterystyczne cechy sieci ad-hoc?
+>>>a) Brak AP
+b) Wymóg stosowania dedykowanego serwera DHCP oraz bazy danych OSPF na każdym urządzeniu klienckim
+>>>c) Decentralizacja – każda stacja kliencka jest równorzędna i wspólnie odpowiada za utrzymanie sieci (np. rozsyłanie ramek Beacon)
+d) Brak możliwości korzystania z pasma 2.4 GHz, co zmusza sieć do pracy wyłącznie w standardzie 802.11ac przy 80 MHz
+::
+
+[Q] Jakie są ograniczenia sieci ad-hoc?
+>>>a) Problem ukrytego węzła (nie ma AP)
+>>>b) Brak możliwości wdrożenia zaawansowanych technik uwierzytelniania np. RADIUS
+>>>c) Anomalie wydajności (maksymalna przepustowość sieci to przepustowość najsłabszego ogniwa)
+d) Ograniczenie maksymalnego zasięgu transmisji do sztywnych 3 metrów, narzucone przez standard warstwy fizycznej 802.11a
+::
+
+[Q] które funkcje warstwy MAC powinny być obsługiwane przez stację w trybie ad-hoc
+>>>a) mechanizm RTS/CTS
+b) Centralna koordynacja czasu antenowego za pomocą funkcji PCF (Point Coordination Function) sterowanej przez nadrzędny kontroler AC
+>>>c) fragmentacja pakietów (w celu zwiększenia efektywności transmisji w warunkach silnych zakłóceń radiowych)
+d) Sprzętowa zmiana adresów MAC w nagłówkach ramek w celu ukrycia tożsamości producenta karty sieciowej (OUI)
+::
+
+[Q] Jaka jest przyczyna spadku wydajności podczas modyfikacji parametrów warstwy MAC i PHY? LAB8
+>>>a)
+b)
+c)
+d)
+::
+
+[Q] Kiedy wykorzystanie szerokiego kanału może powodować spadek wydajności?
+>>>a) Kiedy w sieci występują silne interferencje
+b) Kiedy wszystkie urządzenia w sieci pracują w trybie ad-hoc i wykorzystują wyłącznie sprzętowe ramki RTS/CTS
+>>>c) Kiedy SNR jest niski
+d) Kiedy algorytm PBKDF2 generuje zbyt długie klucze PMK, co przeciąża pamięć RAM kontrolera bezprzewodowego
+::
+ 
+[Q] Co to pikosieć?
+>>>a) Pikosieć to sieć stworzona przez połączenie bluetooth - działająca w architekturze master -slave (jedno urządzenie może być slavem dla 2 pikosieci naraz, oraz jednocześnie slavem i masterem dla 2 pikosieci naraz) pikosieć można łączyć w scatter-nets.
+b) Standard sieci bezprzewodowej, w którym komunikacja odbywa się bez udziału adresów MAC, wyłącznie za pomocą tekstowych komend AT profilu DUN.
+>>>c) W jednej pikosieci może być aktywnych maksymalnie 7 slave'ów naraz
+d) Struktura sieciowa warstwy trzeciej, która automatycznie fragmentuje pakiety IP w celu eliminacji anomalii wydajności w pasmie 5 GHz.
+::
+ 
+[Q] Na jakim paśmie pracuje bluetooth? Jaka jest szerokość kanału w bluetooth? Ile jest tam kanałów?
+>>>a) 2,4Ghz, band = 1Mhz, 79 kanałów
+b) 2,4Ghz, band = 1Mhz, 69 kanałów
+c) 5Ghz, band = 1Mhz, 79 kanałów
+d) 2,4Ghz, band = 20Mhz, 79 kanałów
+::
+ 
+[Q] Z kim komunikuje się warstwa L2CAP?
+>>>a) 
+b) 
+c) 
+d) 
+:: 
+ 
+[Q] Czy 802.11ac zakłóca bluetooth?
+>>>a) Nie ponieważ 802.11ac pracuje na 5Ghz.
+b) Tak ponieważ 802.11ac pracuje na 2,4Ghz.
+c) Tak ponieważ 802.11ac pracuje na 5Ghz.
+d) Nie ponieważ 802.11ac pracuje na 2,4Ghz.
+::
+ 
+[Q] Do czego na labie używa się SPP? 
+>>>a) Do podłączania terminala pomiędzy systemami
+b) Do bezprzewodowego przesyłania dźwięku stereo o wysokiej rozdzielczości (A2DP) pomiędzy kartami radiowymi w pasmie 5 GHz
+>>>c) Do udostępnienia internetu poprzez PPP (point to point) 
+d) Do automatycznego łamania 8-cyfrowych kodów PIN w usłudze WPS przy użyciu tablic tęczowych
+:: 
+ 
+[Q] Co to SPP? 
+>>>a) Profil Bluetooth odpowiedzialny za emulacje portu szeregowego 
+b) Protokół warstwy trzeciej służący do automatycznego wykrywania ukrytych identyfikatorów SSID i mitygacji anomalii wydajności
+c) Narzędzie pakietu Aircrack-ng służące do offline-owego łamania 8-cyfrowych kodów PIN w usłudze WPS metodą tablic tęczowych
+d) Profil bezpieczeństwa (Secure Packet Protection) odpowiedzialny za sprzętowe generowanie i rotację kluczy grupowych GTK
+:: 
+ 
+[Q] Co jest bezpośrednio powyżej HC? 
+>>>a) L2CAP
+b) LMP
+c) OBEX
+d) REFCOMM
+::
+ 
+[Q] Jakiej modulacji używa bluetooth i dlaczego? 
+>>>a) GFSK – ponieważ charakteryzuje się wysoką efektywnością widmową oraz stałą amplitudą sygnału, co umożliwia budowę energooszczędnych i tanich układów radiowych
+b) 1024-QAM – ponieważ oferuje najwyższą odporność na zaniki sygnału i pozwala na bezprzewodową emulację portu szeregowego w paśmie 5 GHz
+c) CCK (Complementary Code Keying) – ponieważ eliminuje anomalię wydajności i jest wymagana przez profil DUN do obsługi komend AT
+d) OFDM – ponieważ dzieli pasmo na 64 składowe podnośne, co jest niezbędne do poprawnego działania mechanizmu fragmentacji pakietów IP
+::
+ 
+[Q] Do czego wykorzystywany jest protokół OBEX na labie? 
+>>>a) Do bezprzewodowej wymiany plików (obiektów) pomiędzy urządzeniami w architekturze klient-serwer, wykorzystując m.in. narzędzie konsolowe
+b) Do emulacji fizycznego kabla szeregowego COM w celu uruchomienia tekstowego terminala Putty na warstwie RFCOMM
+c) Do automatycznego rozsyłania grupowych kluczy szyfrujących GTK podczas przesyłania ramek deautentykacji
+d) Do generowania skompresowanych tablic tęczowych bezpośrednio na karcie radiowej w celu mitygacji anomalii wydajności
+:: 
+ 
+[Q] czy 802.11b interferuje z Bluetooth? 
+>>>a) Tak ponieważ 802.11b pracuje na 2,4Ghz
+b) Tak ponieważ 802.11b pracuje na 5Ghz
+c) Tak ponieważ 802.11ax pracuje na 2,4Ghz
+d) Nie ponieważ 802.11b pracuje na 2,4Ghz
+:: 
+ 
+[Q] Co to jest REFCOMM i z jakim profilem jest bezpośrednio związany?
+>>>a) REFCOMM to protokół warstwy transportowej modelu Bluetooth, który współpracuje z profilem SPP oraz DUN
+b) Warstwa adaptacji protokołów (AVDT), która odpowiada za strumieniowanie multimediów i jest bezpośrednio powiązana z profilem A2DP
+c) Protokół kontroli i emulacji łącza logicznego (L2CAP), który zarządza segmentacją pakietów i jest bezpośrednio powiązany z profilem PAN
+d) Protokół aplikacji bezprzewodowych (WAP), który odpowiada za przesyłanie obiektów binarnych i jest bezpośrednio powiązany z profilem DUN
+:: 
+ 
+[Q] Jak urządzenia z Bluetooth radzą sobie z zakłóceniami radiowymi?
+>>>a) Bluetooth jeśli wykryje jakaś interferencje to przełącza się na inny kanał i retransmituje zakłóconą ramkę.
+b) Stosują technikę DFS (Dynamic Frequency Selection), która w przypadku wykrycia radaru pogodowego lub sieci Wi-Fi automatycznie przenosi całą pikosieć w wolne od zakłóceń pasmo 5 GHz.
+c) Wykorzystują algorytm CSMA/CA oraz mechanizm wymiany ramek RTS/CTS, które przed każdą transmisją fizycznie blokują pasmo radiowe dla wszystkich obcych urządzeń w zasięgu.
+d) Polegają na technologii MIMO (Multiple Input Multiple Output), która formuje wiązkę radiową (Beamforming) wokół źródła zakłóceń, całkowicie je tłumiąc.
+::
+ 
+[Q] Czym jest parked slave w architekturze sieci Bluetooth?
+>>>a) Parked slave w Bluetooth oznacza nieaktywnego slave w pikosieci
+b) To urządzenie peryferyjne, które czasowo rozłączyło się z pikosiecią i automatycznie przełączyło na nasłuchiwanie komend AT profilu DUN.
+c) To stacja kliencka, która z powodu silnych zakłóceń radiowych została zablokowana przez mechanizm AFH i czeka na ponowne przesłanie ramek deautentykacji.
+d) To urządzenie pełniące rolę Mastera w sąsiedniej pikosieci (scatternet), które czasowo zawiesiło nadawanie w celu oszczędzania baterii.
+::
+ 
+[Q] Jaki profil jest używany w komunikacji między komputerem PC a innymi urządzeniami peryferyjnymi, takimi jak mysz czy klawiatura (wyposażone w moduł Bluetooth)?
+>>>a) PAN - Personal Area Network Profile
+b) HSP - Headset Profile
+c) FTP - File Transfer Profile
+d) SPP - Serial Port Profile
+::
+ 
+[Q] Jakie są zależności między profilami używanymi w ćwiczeniu nt bluetooth?
+>>>a) FTP (File Transfer Protocol) zależy od SPP (Serial Port Profile), które zależy od GAP (Generic Access Profile)
+b) Wszystkie są niezależne
+::
+ 
+[Q] Jaka jest maksymalna moc nadajnika dla urządzeń Bluetooth?
+>>>a) 100 mW
+b) 1 mW
+c) 0 dBm
+>>>d) 20 dBm
+::
+ 
+[Q] Po co wykorzystujemy HSP? 
+>>>a) Do podłączenia ze słuchawkami za pośrednictwem Bluetooth (działa w trybie mono - słaby dźwięk)
+b) Do podłączenia myszki za pośrednictwem Bluetooth
+c) Do podłączenia klawiatury za pośrednictwem Bluetooth
+d) Do uzyskania dostępu do internetu za pośrtednictwem Bluetooth
+::
+ 
+[Q] Co to jest profil FTP i do czego służy?
+>>>a) Profil FTP służy do przesyłania lub modyfikowania plikówm, korzysta z OBEX
+b) Profil FTP służy do emulacji wirtualnej karty sieciowej Ethernet i udostępniania połączenia internetowego bez użycia komend AT
+c) Profil FTP służy wyłącznie do jednokierunkowego "wpychania" pojedynczych obiektów (np. wizytówek vCard) bez możliwości wglądu w system plików odbiorcy
+::
+ 
+[Q] Proszę wskazać mechanizm odpowiadający za unikanie interferencj w bluetooth
+>>>a) AFH (Adaptive Frequency Hopping)
+b) PCF (Point Coordination Function), który poprzez centralny punkt dostępowy cyklicznie odpytuje stacje (Polling) o gotowość do nadawania
+c) CSMA/CA wraz z procedurą powstrzymania (Backoff), który nakazuje stacji ciągłe badanie poziomu energii sygnału (CCA) przed wysłaniem każdej ramki
+d) DFS (Dynamic Frequency Selection), który nasłuchuje sygnałów radarowych i automatycznie przenosi całą transmisję w pasmo 5 GHz
+::
+ 
+
+`;
+
+            // --- LOGIKA APLIKACJI ---
+
+            function cleanText(text) {
+                return text
+                    .replace(/lambda/gi, "λ")
+                    .replace(/deg/gi, "°")
+                    .replace(/sqrt/gi, "√")
+                    .replace(/ohm/gi, "Ω")
+                    .replace(/alpha/gi, "α")
+                    .replace(/beta/gi, "β");
+            }
+
+            // Fisher-Yates shuffle
+            function shuffleArray(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function parseData(data) {
+                const questions = [];
+                // Split by [Q] marker
+                const blocks = data
+                    .split(/\[Q\]/)
+                    .filter((x) => x.trim().length > 0);
+
+                console.group("📋 PARSOWANIE PYTAŃ - RAPORT");
+                console.log(`Znaleziono ${blocks.length} bloków [Q]`);
+
+                blocks.forEach((content, idx) => {
+                    const blockNum = idx + 1;
+                    const previewText =
+                        content.substring(0, 80).replace(/\n/g, " ").trim() +
+                        "...";
+
+                    // Check for explanation (after :: separator)
+                    let mainContent = content;
+                    let explanation = "";
+                    const explanationMatch = content.split(/\n::\s*/);
+                    if (explanationMatch.length > 1) {
+                        mainContent = explanationMatch[0];
+                        explanation = cleanText(
+                            explanationMatch.slice(1).join("\n").trim(),
+                        );
+                    }
+
+                    // Split content into Question and Answers
+                    // Find first occurrence of A) or a) - POPRAWIONE REGEX
+                    // Obsługuje: a), >>a), >>>a), >a), >>>>a) itd.
+                    const match = mainContent.match(
+                        /(\n|^)\s*(>{1,4})?\s*[a-zA-Z]\)/,
+                    );
+                    if (!match) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} POMINIĘTY - brak odpowiedzi (nie znaleziono wzorca "a)" lub ">>>a)")`,
+                        );
+                        console.warn(`   Treść: "${previewText}"`);
+                        console.warn(
+                            `   Pełna treść bloku:`,
+                            mainContent.substring(0, 300),
+                        );
+                        return;
+                    }
+
+                    // ZACHOWAJ PRZEJŚCIA DO NOWEJ LINII W PYTANIU
+                    const qText = mainContent.substring(0, match.index);
+                    // Usuń puste linie na początku i końcu, ale zachowaj wewnętrzne przejścia
+                    const qTextClean = qText
+                        .replace(/^\s*\n/, "")
+                        .replace(/\n\s*$/, "");
+
+                    const answersBlock = mainContent.substring(match.index);
+
+                    const answers = [];
+                    const skippedLines = [];
+
+                    // NOWY ALGORYTM: Łączy wieloliniowe odpowiedzi
+                    // Regex do wykrycia początku odpowiedzi: opcjonalne > + litera + )
+                    const answerStartRegex = /^(>{0,4})\s*([a-zA-Z])\)/;
+
+                    const lines = answersBlock.split(/\n/);
+                    let currentAnswer = null;
+
+                    lines.forEach((line, lineIdx) => {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine.length === 0) {
+                            // Pusta linia - NIE dodawaj przejścia do nowej linii
+                            // (puste linie są separatorami między odpowiedziami, nie częścią odpowiedzi)
+                            return;
+                        }
+
+                        const answerMatch = trimmedLine.match(answerStartRegex);
+
+                        if (answerMatch) {
+                            // To jest początek nowej odpowiedzi
+                            // Zapisz poprzednią odpowiedź jeśli istnieje (po usunięciu trailing whitespace)
+                            if (currentAnswer !== null) {
+                                currentAnswer.text = currentAnswer.text.replace(
+                                    /\s+$/,
+                                    "",
+                                );
+                                answers.push(currentAnswer);
+                            }
+
+                            const arrows = answerMatch[1];
+                            const isCorrect = arrows.length >= 2; // >> lub więcej = poprawna
+                            const answerText = trimmedLine
+                                .replace(answerStartRegex, "")
+                                .trim();
+
+                            currentAnswer = {
+                                text: cleanText(answerText),
+                                correct: isCorrect,
+                                originalLine: trimmedLine,
+                            };
+                        } else if (
+                            currentAnswer !== null &&
+                            !trimmedLine.startsWith("::")
+                        ) {
+                            // To jest kontynuacja poprzedniej odpowiedzi (wieloliniowa)
+                            // Zachowaj przejście do nowej linii
+                            currentAnswer.text += "\n" + cleanText(trimmedLine);
+                            currentAnswer.originalLine += "\n" + trimmedLine;
+                        } else if (
+                            trimmedLine.length > 3 &&
+                            !trimmedLine.startsWith("::")
+                        ) {
+                            // Linia przed pierwszą odpowiedzią lub po komentarzu
+                            skippedLines.push({ lineIdx, line: trimmedLine });
+                        }
+                    });
+
+                    // Dodaj ostatnią odpowiedź (po usunięciu trailing whitespace)
+                    if (currentAnswer !== null) {
+                        currentAnswer.text = currentAnswer.text.replace(
+                            /\s+$/,
+                            "",
+                        );
+                        answers.push(currentAnswer);
+                    }
+
+                    if (answers.length === 0) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} POMINIĘTY - nie znaleziono żadnych odpowiedzi`,
+                        );
+                        console.warn(`   Treść pytania: "${previewText}"`);
+                        console.warn(
+                            `   Blok odpowiedzi:`,
+                            answersBlock.substring(0, 200),
+                        );
+                        return;
+                    }
+
+                    const correctAnswers = answers.filter((a) => a.correct);
+                    if (correctAnswers.length === 0) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} - BRAK POPRAWNYCH ODPOWIEDZI (brak >> lub >>> przed odpowiedzią)`,
+                        );
+                        console.warn(`   Treść: "${previewText}"`);
+                        console.warn(
+                            `   Znalezione odpowiedzi:`,
+                            answers.map((a) => a.originalLine.substring(0, 50)),
+                        );
+                    }
+
+                    if (skippedLines.length > 0) {
+                        console.info(
+                            `ℹ️ Blok #${blockNum} - pominięte linie (komentarze?):`,
+                            skippedLines,
+                        );
+                    }
+
+                    // Shuffle answers
+                    const shuffledAnswers = shuffleArray(answers);
+                    // Assign new letters A, B, C...
+                    shuffledAnswers.forEach((ans, i) => {
+                        ans.id = String.fromCharCode(65 + i); // A, B, C, D...
+                    });
+
+                    questions.push({
+                        text: cleanText(qTextClean), // Zachowuje przejścia do nowej linii
+                        answers: shuffledAnswers,
+                        type: "multi", // *** ZMIANA: WYMUSZENIE TRYBU WIELOKROTNEGO ***
+                        explanation: explanation,
+                        blockNumber: blockNum,
+                    });
+
+                    console.log(
+                        `✅ Blok #${blockNum} OK - ${answers.length} odp., ${correctAnswers.length} poprawnych, typ: ${questions[questions.length - 1].type}`,
+                    );
+                });
+
+                console.log(`\n📊 PODSUMOWANIE PARSOWANIA:`);
+                console.log(`   Bloków [Q]: ${blocks.length}`);
+                console.log(`   Sparsowanych pytań: ${questions.length}`);
+                console.log(
+                    `   Pominiętych: ${blocks.length - questions.length}`,
+                );
+
+                // POPRAWIONE: Usuwanie duplikatów na podstawie tytułu ORAZ odpowiedzi
+                // Jeśli chociaż jedna odpowiedź się różni - pytanie jest unikalne
+                const uniqueQuestions = [];
+                const seenSignatures = new Set();
+                const duplicates = [];
+
+                questions.forEach((q) => {
+                    // Twórz sygnaturę z tytułu + posortowanych odpowiedzi
+                    const titlePart = q.text
+                        .toLowerCase()
+                        .replace(/\s+/g, " ")
+                        .trim();
+                    const answersPart = q.answers
+                        .map((a) =>
+                            a.text.toLowerCase().replace(/\s+/g, " ").trim(),
+                        )
+                        .sort()
+                        .join("|");
+                    const signature = titlePart + "|||" + answersPart;
+
+                    if (!seenSignatures.has(signature)) {
+                        seenSignatures.add(signature);
+                        uniqueQuestions.push(q);
+                    } else {
+                        duplicates.push({
+                            blockNumber: q.blockNumber,
+                            text: q.text.substring(0, 60),
+                        });
+                    }
+                });
+
+                if (duplicates.length > 0) {
+                    console.log(
+                        `\n🔄 DUPLIKATY (usunięte - identyczny tytuł I odpowiedzi):`,
+                    );
+                    duplicates.forEach((d) =>
+                        console.log(
+                            `   Blok #${d.blockNumber}: "${d.text}..."`,
+                        ),
+                    );
+                }
+
+                console.log(
+                    `\n✨ FINALNA LICZBA PYTAŃ: ${uniqueQuestions.length}`,
+                );
+                console.groupEnd();
+
+                // Shuffle questions order
+                return shuffleArray(uniqueQuestions);
+            }
+
+            // Funkcja pomocnicza do konwersji tekstu z \n na <br> dla HTML
+            function textToHtml(text) {
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\n/g, "<br>");
+            }
+
+            let allQuestions = [];
+            let totalScore = 0;
+            let answeredCount = 0;
+
+            function renderQuiz() {
+                allQuestions = parseData(rawData);
+                const container = document.getElementById("quiz-container");
+                container.innerHTML = "";
+
+                document.getElementById("progress").innerText =
+                    `Pytania: 0 / ${allQuestions.length}`;
+
+                allQuestions.forEach((q, index) => {
+                    const card = document.createElement("div");
+                    card.className = "question-card";
+                    card.id = `q-card-${index}`;
+
+                    const inputType = q.type === "multi" ? "checkbox" : "radio";
+                    const typeLabel =
+                        q.type === "multi" ? "(Wielokrotny wybór)" : "";
+
+                    let answersHtml = "";
+                    q.answers.forEach((ans, aIndex) => {
+                        // Zachowuje przejścia do nowej linii w odpowiedziach
+                        answersHtml += `
+                <label class="option-btn" id="lbl-${index}-${aIndex}">
+                    <input type="${inputType}" name="q${index}" value="${aIndex}">
+                    <span><b>${ans.id})</b> ${textToHtml(ans.text)}</span>
+                </label>
+            `;
+                    });
+
+                    // Zmieniono: dodano przycisk "Sprawdź" widoczny od razu
+                    // Dodano przycisk wyjaśnienia jeśli istnieje
+                    let explanationHtml = "";
+                    if (q.explanation) {
+                        explanationHtml = `
+                <div class="explanation-container" id="expl-container-${index}" style="display: none;">
+                    <button class="show-explanation-btn" onclick="toggleExplanation(${index})">💡 Pokaż wyjaśnienie</button>
+                    <div class="explanation-text hidden" id="expl-text-${index}">${q.explanation}</div>
+                </div>
+            `;
+                    }
+
+                    card.innerHTML = `
+            <div class="q-header">
+                <span>Pytanie ${index + 1}</span>
+                <span>${typeLabel}</span>
+            </div>
+            <div class="q-text">${textToHtml(q.text)}</div>
+            <div class="options-grid">
+                ${answersHtml}
+            </div>
+            <div class="actions">
+                <button class="check-btn" id="btn-check-${index}" onclick="checkAnswer(${index})">Sprawdź</button>
+            </div>
+            ${explanationHtml}
+        `;
+                    container.appendChild(card);
+                });
+            }
+
+            function checkAnswer(qIndex) {
+                const q = allQuestions[qIndex];
+                const card = document.getElementById(`q-card-${qIndex}`);
+                const inputs = document.querySelectorAll(
+                    `input[name="q${qIndex}"]`,
+                );
+                const btn = document.getElementById(`btn-check-${qIndex}`);
+
+                let allCorrect = true;
+                let anySelected = false;
+
+                // Najpierw sprawdzamy czy cokolwiek zaznaczono
+                inputs.forEach((input) => {
+                    if (input.checked) anySelected = true;
+                });
+
+                if (!anySelected) return; // Jeśli nic nie zaznaczono, nie sprawdzaj
+
+                inputs.forEach((input) => {
+                    const ansIndex = parseInt(input.value);
+                    const label = document.getElementById(
+                        `lbl-${qIndex}-${ansIndex}`,
+                    );
+                    const isCorrect = q.answers[ansIndex].correct;
+
+                    // Reset styles
+                    label.classList.remove(
+                        "is-correct",
+                        "is-wrong",
+                        "should-be",
+                    );
+
+                    if (input.checked) {
+                        if (isCorrect) {
+                            label.classList.add("is-correct");
+                        } else {
+                            label.classList.add("is-wrong");
+                            allCorrect = false;
+                        }
+                    }
+
+                    // Blokujemy zmianę odpowiedzi po sprawdzeniu
+                    input.disabled = true;
+                    label.classList.add("disabled");
+                });
+
+                // Show missing correct answers
+                inputs.forEach((input) => {
+                    const ansIndex = parseInt(input.value);
+                    const label = document.getElementById(
+                        `lbl-${qIndex}-${ansIndex}`,
+                    );
+                    const isCorrect = q.answers[ansIndex].correct;
+
+                    if (isCorrect && !input.checked) {
+                        label.classList.add("should-be");
+                        allCorrect = false;
+                    }
+                });
+
+                if (allCorrect) {
+                    card.classList.add("correct");
+                    card.classList.remove("wrong");
+                } else {
+                    card.classList.add("wrong");
+                    card.classList.remove("correct");
+                }
+
+                // Ukrywamy przycisk po sprawdzeniu
+                btn.style.display = "none";
+
+                // Pokazujemy kontener z wyjaśnieniem (jeśli istnieje)
+                const explContainer = document.getElementById(
+                    `expl-container-${qIndex}`,
+                );
+                if (explContainer) {
+                    explContainer.style.display = "block";
+                }
+
+                updateScore();
+            }
+
+            function toggleExplanation(qIndex) {
+                const explText = document.getElementById(`expl-text-${qIndex}`);
+                const btn = document.querySelector(
+                    `#expl-container-${qIndex} .show-explanation-btn`,
+                );
+
+                if (explText.classList.contains("hidden")) {
+                    explText.classList.remove("hidden");
+                    btn.textContent = "🔽 Ukryj wyjaśnienie";
+                } else {
+                    explText.classList.add("hidden");
+                    btn.textContent = "💡 Pokaż wyjaśnienie";
+                }
+            }
+
+            function updateScore() {
+                const cards = document.querySelectorAll(".question-card");
+                let correctCount = 0;
+                let attempted = 0;
+
+                cards.forEach((card) => {
+                    if (card.classList.contains("correct")) correctCount++;
+                    if (
+                        card.classList.contains("correct") ||
+                        card.classList.contains("wrong")
+                    )
+                        attempted++;
+                });
+
+                const percent =
+                    attempted === 0
+                        ? 0
+                        : Math.round((correctCount / attempted) * 100);
+                document.getElementById("score").innerText = percent;
+                document.getElementById("progress").innerText =
+                    `Odpowiedziano: ${attempted} / ${allQuestions.length}`;
+            }
+
+            function resetQuiz() {
+                renderQuiz();
+                document.getElementById("score").innerText = "0";
+                window.scrollTo(0, 0);
+            }
+
+            // Start
+            renderQuiz();
+        </script>
+    </body>
+</html>

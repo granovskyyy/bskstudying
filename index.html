@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSK Studying</title>
+
+<style>
+:root {
+            --primary: #60a5fa;
+            --primary-hover: #3b82f6;
+
+            --bg: #0f172a;
+            --card: #1e293b;
+
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+
+            --border: #334155;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0,0,0,.3);
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+        }
+
+        .menu-card {
+            display: block;
+            text-decoration: none;
+            color: var(--text-main);
+
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--primary);
+
+            padding: 25px;
+            margin-bottom: 20px;
+
+            border-radius: 12px;
+
+            transition: all .2s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .menu-desc {
+            color: var(--text-muted);
+        }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>BSK Nauka🛜📚👨‍💻</h1>
+        <p class="subtitle">Powodzenia w nauce na bsk</p>
+    </header>
+
+    <a href="lab/index.html" class="menu-card">
+        <div class="menu-title">📘 Kolokwium</div>
+        <div class="menu-desc">
+            Pytania na kolokwium z laboratorium do przećwiczenia. 
+        </div>
+    </a>
+
+    <a href="zeroday/index.html" class="menu-card">
+        <div class="menu-title">📙 Zerówka</div>
+        <div class="menu-desc">
+            Egzamin dla elit (50% najlepszych z kierunku) 🐐
+        </div>
+    </a>
+
+    <a href="egz/index.html" class="menu-card">
+        <div class="menu-title">📗 Egzamin</div>
+        <div class="menu-desc">
+            Kompletna baza pytań egzaminacyjnych.
+        </div>
+    </a>
+
+</div>
+
+</body>
+</html>

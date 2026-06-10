@@ -923,7 +923,360 @@
             >>>b) aby przesłać dane do uprzednio połączonego urządzenia
             >>>c) aby zareklamować swoją obecność dla urządzenia, które chce się połączyć
             d) aby wymusić ustalenie sekwencji skoków i czasu wzbudzenia
+
+            [#1] Z których technik transmisji korzysta Bluetooth?
+            a) OFDM
+            b) CSMA/CA
+            c) DSSS
+            >>> d) GFSK (GFSK albo EDR = GFSK + PSK (czyli 8DPSK lub pi/4-DQPSK) [Phase Shift Keying])
+            >>> e) frequency hopping 
+            >>> f) retransmisje utraconych danych
+
+            [#1] Do czego służy program iPerf?
+            >>> a) do pomiaru przepustowości sieci
+            b) do kontroli przepustowości
+            c) do analizy parametrów łącza radiowego 
+            d) do konfiguracji firewalla
+            e) do wykonywania ataków na sieć WLAN przy pomocy o packet injection
+            f) do analizowania ruchu sieciowego
+
+            [#1] Jaki algorytm jest używany do utworzenia z 64-bitowego klucza pseudolosowego strumienia bitów w protokole WEP?
+            a) DES
+            >>> b) RC4 
+            c) AES
+            d) CRC
+            e) TKiP
+            f) RSA
+
+            [#1] Które narzędzie bezpośrednio służy do łamadnia klucza WEP?
+            a) kismet
+            b) reaver  (Sluzy do lamania WPS)
+            c) pyrit 
+            >>> d) aircrack-ng
+            e) airbase-ng
+            f) aireplay-ng
+
+            [#1] Do czego służy oprogramowanie aireplay-ng?
+            >>> a) fake authentication
+            >>> b) atak ARP replay
+            >>> c) deauthentication attack
+            d) łamanie zabezpieczeń WPS  (do łamania WPS słuzy REAVER)
+            e) tworzenie fałszywego AP (rogue AP)
+            f) dekodowanie klucza WEP   (aircrack-ng)
+
+            [#1] Sieć ad-hoc pracuje jako:
+            a) DFS
+            b) MCS
+            c) WDS
+            >>> d) IBSS
+            e) BSS
+            f) ESS
+
+            [#1] Czym jest PTK w WPA/WPA2?
+            a) kluczem szyfrującym transmisje multicast i broadcast
+            b) hasłem indywidualnego użytkownika zarejestrowanego na serwerze RADIUS
+            c) metodą autoryzacji za pomocą PIN-u
+            d) hasłem dostępu do sieci WLAN
+            e) kluczem generowanym bezpośrednio z klucza PSK i SSID 
+            >>> f) kluczem szyfrującym daną sesję użytkownika
+
+            [#1] Dlaczego stacje muszą odczekać losowy czas backoff w oknie współzawodnictwa między nadawaniem kolejnych ramek z bufora stacji?
+            a) W celu doboru właściwego trybu transmisji.
+            b) Aby umożliwić lepszą ocenę parametrów kanału radiowego.
+            >>> c) W celu zmniejszenia ryzyka kolizji.
+            d) Aby umożliwić stacjom zmianę kanału w celu unikania interferencji.
+            e) Aby dać czas innym stacjom na potwierdzenie wcześniej odebranych transmisji.  
+            >>> f) W celu zapewnienia sprawiedliwego (równomiernego) dostępu do kanału.
+
+            [#1] Podczas pomiaru przepustowości sieci wykorzystanie protokołu TCP może dać inne rezultaty niż w przypadku wykorzystania protokołu UDP:
+            >>> a) z powodu większej nadmiarowości protokołu TCP. 
+            >>> b) w przypadku występowania błędów transmisji.
+            c) z powodu nadmiarowości wprowadzanej przez mechanizm RTS/CTS.
+            >>> d) z powodu działania mechanizmu kontroli przeciążeń w protokole TCP. 
+            e) z powodu przesyłania potwierdzeń przez protokół UDP.
+            f) z powodu działania mechanizmu retransmisji protokołu IEEE 802.11.  
+
+            [#1] Wskaż ataki typu DoS (Denial of Service) na sieć WLAN.
+            >>> a) fake authentication
+            >>> b) atak deauthentication 
+            c) Hirte
+            >>> d) beacon flooding
+            e) FMS
+            >>> f) ARP replay 
+
+            [#1] Jaką rolę spełnia 4-way-handshake w standardzie WPA/WPA2?
+            >>> a) generowanie tymczasowych kluczy szyfrujących   
+            >>> b) uwierzytelnienie stacji
+            c) weryfikacja certyfikatu serwera autoryzującego
+            >>> d) uwierzytelnienie AP
+            e) ustalenie parametrów połączenia
+            f) zabezpieczenie przed atakami fake authentication
+
+            [#1] Wskaż profile Bluetooth
+            a) SSH
+            b) HCI  
+            >>> c) DUN
+            >>> d) FTP
+            e) L2CAP
+            >>> f) HSP
+
+            [#1] Dlaczego wydajność sieci jest niska podczas przesyłania krótkich ramek danych?
+            >>> a) Z powodu sporego narzutu protokołu IEEE 802.11.
+            >>> b) Z powodu tzw. anomalii wydajności.backoff
+            c) Powodem jest przesyłanie większej liczby ramek ACK.
+            >>> d) Na skutek częstszego odliczania backoff-u. 
+            e) Z powodu częstszego wysyłania ramek beacon.
+            f) Powodem jest zwiększenie prawdopodobieństwa kolizji względem transmisji długich ramek.
+
+            [#1] Nagłówek MAC ramki standardu IEEE 802.11: - wielokrotnego wyboru
+            >>> a) zawiera pola adresowe o rozmiarze 6B
+            >>> b)zawiera informację czy ramka jest retransmitowana) (pole Retry)
+            c)zawsze posiada dokładnie dwa pola adresowe) (ma 4)
+            d)zawiera informację o długości ramki. (to ma PLCP)
+            e)informuje o zastosowanej prędkości transmisji pola DATa)
+            f)jest transmitowany bezpośrednio po preambule)  (to  PLCPheader)
+
+            [#1] Interfejs WLAN działający w trybie monitor:
+            a) jest dostępny na wszystkich urządzeniach Wi-Fi.
+            >>> b) jest niezbędny do działania większości narzędzi pakietu aircrack-ng.
+            >>> c) pozwala analizować wszystkie odebrane ramki IEEE 802.11.
+            d) nie pozwala na wysyłanie żadnych ramek. ?
+            e) pozwala analizować tylko ramki odebrane jeśli stacja jest połączona z siecią.
+            f) używa nagłówka radiotap do zarejestrowania informacji o odebranym sygnale)
+
+            [#1] Jakim polem zaczyna się nagłówek MAC ramek danych standardu IEEE 802.11?
+            a) PLCP
+            b) CRC
+            c) Address 1
+            d) preambuła
+            e) FCS
+            >>> f) Frame control
+
+            [#1] Jaka cecha wyróżnia sieć WLAN działającą w trybie ad-hoc?
+            >>> a) Brak ramek beacon.[a]
+            b)Niemożność stosowania protokołu WPA/WPA2.
+            c)Wykorzystanie trybu "master" interfejsu bezprzewodowego.
+            >>> d)Brak wykorzystania AP.
+            e)Wykorzystanie trybu "managed" interfejsu bezprzewodowego.
+            f)Złożone, wielowarstwowa topologia sieci.
+
+            [#1] Jaka będzie wartość okna współzawodnictwa CW (Contention Window) stacji w ramach funkcji DCF standardu IEEE 802.11, jeżeli stacja nadająca ramkę DATA otrzymała ramkę ACK, przy założeniu, że poprzednia wartość okna CW wynosiła 31, a CWmin=31 i CWmax=1023?
+            a)15
+            >>> b)31
+            c)32
+            d)63
+            e)64
+            f)1023
+
+            [#1] Wskaż, jakie parametry są wykorzystywane do utworzenia kluczy szyfrujących w WPA/WPA2
+            a)wektor IV
+            >>> b)PSK
+            c)znacznik czasu (timestamp)
+            >>> d)BSSID 
+            >>> e)A-nonce i S-nonce
+            >>> f)SSID
+
+            [#1] Czym jest szczelina czasowa (slot time) w łączu CSMA/CA?
+            a)to interwał z jakim AP wysyłą ramki beacon.
+            >>> b)to jednostka czasu odliczana podczas procedury backoff)
+            c)to krótki odcinek czasu pomiędzy transmisją nagłówka PLCP a nagłówka MAc)
+            d)to czas potrzebny stacji na wysłanie odpowiedzi (response) na ramkę zapytania (request). 
+            e)to czas na jaki stacja rezerwuje sobie kanał po wygraniu rywalizacji o jego dostęp, w którym może przeprowadzać transmisje)
+            f)to minimalny odstęp miedzy transmisjami dwóch ramek.
+
+            [#1] Czym jest GTK w WPA/WPA2?
+            >>> a)kluczem szyfrującym transmisje multicast i broadcast
+            b)kluczem generowanym bezpośrednio z klucza PSK i SSID
+            c)hasłem dostępu do sieci WLAN
+            d)metodą autoryzacji za pomocą PIN-u
+            e)kluczem szyfrującym daną sesję użytkownika
+            f)hasłem indywidualnego użytkownika zarejestrowanego na serwerze RADIUS
+
+            [#1] Czym jest PSK w WPA/WPA2?
+            a) kluczem szyfrującym transmisje multicast i broadcast
+            b) metodą autoryzacji za pomocą PIN-u
+            c) hasłem indywidualnego użytkownika zarejestrowanego na serwerze RADIUS
+            >>> d) hasłem dostępu do sieci WLAN 
+            e) kluczem szyfrującym daną sesję użytkownika
+            f) kluczem generowanym bezpośrednio z hasła sieci i SSID
+
+            [#1] Co zawiera tablica bridgingu?
+            a)powiązanie interfejsów sieciowych z adresacją IP urządzeń z którymi można połączyć się poprzez dany interfejs
+            b)przypisanie interfejsów (także wirtualnych) do mostów (wirtualnych)
+            >>> c)rejestr interfejsów sieciowych wraz z adresami sprzętowymi MAC urządzeń dostępnych poprzez dany interfejs
+            d)powiązanie interfejsów sprzętowych z utworzonymi na nich interfejsami wirtualnymi
+            e)powiązanie adresów IP z adresami sprzętowymi
+            f)ograniczenia przepustowości powiązane z danym interfejsem
+
+            [#1] Jakimi parametrami mogą różnić się sieci wirtualne rozgłaszane przez jeden interfejs fizyczny WLAN?
+            a) kanał radiowy w obrębie danego pasma (np. 1 i 6)
+            >>> b) SSID
+            >>> c) RTS_threshold 
+            >>> d) sposób uwierzytelniania
+            e) pasmo radiowe
+            >>> f) czy sieć jest ukryta 
+
+            [#1] Zaznacz serwer/protokół AAA:
+            a) TLS
+            b) MSCHAPv2
+            >>> c) DIAMETER
+            >>> d) TACACS+
+            e) PSK
+            >>> f) RADIUS
+
+            [#1] Które parametry opisują działanie mechanizmu Backoff w łączu CSMA/CA?
+            >>> a) CWmax
+            b) MCS
+            >>> c) slot time (długość slotu)
+            >>> d) CWmin
+            e) beacon interval
+            f) RTS threshold 
+
+            [#1] Jak powinna zachować się stacja która odbierze ramkę CTS przeznaczoną dla innej stacji?
+            a) wysłać ramkę RTS
+            b) po czasie SIFS podjąć próbę transmisji danych
+            c) wysłać ACK
+            >>> d) wstrzymać swoje próby transmisji na czas wskazany w odebranej ramce CTS
+            e) przesłać dalej
+            f) zignorować
+
+            [#1] Wskaż sytuacje w których korzystna może okazać sie zmiana wartości CMmin (i CWmax).
+            a) Duża liczba transmitujących stacji -> zwiększenie CW.
+            b) Transmisja krótkich ramek -> zmniejszenie CW.
+            c) Transmisja krótkich ramek -> zwiększenie CW. 
+            d) Mała liczba transmitujących stacji -> zwiększenie CW.
+            e) Duża liczba transmitujących stacji -> zmniejszenie CW.
+            f) Mała liczba transmitujących stacji -> zmniejszenie CW.        
+
+            [#1] Jakimi parametrami mogą różnić się sieci wirtualne rozgłaszane przez jeden interfejs fizyczny WLAN?
+            a) sposób uwierzytelniania 
+            b) RTS_threshold 
+            c) SSID 
+            d) pasmo radiowe
+            e) czy sieć jest ukryta
+            f) kanał radiowy w obrębie danego pasma (np. 1 i 6)
+
+            [#1] Za pomocą iptables można:
+            >>> a) konfigurować funkcjonalność firewalla)
+            >>> b) konfigurować ograniczenia przepustowości dla wybranych klientów lub usług.
+            >>> c) konfigurować czasowy dostęp do sieci WAN dla wybranych klientów.
+            >>> d) konfigurować funkcję NAT.
+            e) tworzyć wirtualne interfejsy.
+            f) tworzyć wirtualne sieci WLAN.
+
+            [#1] Czym różni się wydajność sieci WLAN w warunkach nasycenia dla małej i dużej liczby stacji przy standardowych ustawieniach CW. Dlaczego?
+            a) Wydajność sieci nie zmienia się wraz z liczbą transmitujacych stacji.
+            b) Mniejsza sieć ma mniejszą wydajność z powodu częstszych retransmisji.
+            c) Większa sieć ma większą wydajność z powodu lepszego nasycenia łącza)
+            >>> d) Większa sieć ma mniejszą wydajność z powodu liczniejszych kolizji.
+            >>> e) Większa sieć ma mniejszą wydajność z powodu częstszych retransmisji.
+            f) Mniejsza sieć ma mniejszą wydajność z powodu liczniejszych kolizji.
+
+            [#1] Czym jest DIFS? 
+            a) to jednostka czasu odliczana podczas procedury backoff)
+            >>> b) to czas jaki musi upłynąć od zwolnienia kanału do rozpoczęcia odliczania w procedurze backoff (kanał nie może być wtedy zajęty)
+            c) to czas potrzebny stacji na wysłanie odpowiedzi (response) na ramkę zapytania (request).
+            d) to interwał z jakim AP wysyłą ramki beacon.
+            e) to minimalny odstęp miedzy transmisjami dwóch ramek.
+            f) to czas na jaki stacja rezerwuje sobie kanał po wygraniu rywalizacji o jego dostęp, w którym może przeprowadzać transmisje)
+
+            [#1] Do czego służy narzędzie airmon-ng? 
+            a) do analizy ruchu w sieci WLAN
+            >>> b) do uruchomienia trybu monitor interfejsu WLAN
+            c) do przechwytywania SSID sieci ukrytej
+            d) do łamania haseł WEP i WPA
+            e) do wyszukiwania sieci zabezpieczonych przez WPS
+            f) do utworzenia fałszywego AP
+
+            [#1] Wskaż warstwy stosu protokołów Bluetooth:
+            a) RTS
+            b) MCS
+            >>> c) L2CAP
+            d) HSP
+            >>> e) Baseband
+            >>> f) LMP
+
+            [#1] Czym różni się wydajność sieci WLAN w warunkach nasycenia dla małej i dużej liczby stacji przy standardowych ustawieniach CW. Dlaczego?
+            a) Mniejsza sieć ma mniejszą wydajność z powodu liczniejszych kolizji.
+            b) Mniejsza sieć ma mniejszą wydajność z powodu częstszych retransmisji.
+            >>> c) Większa sieć ma mniejszą wydajność z powodu częstszych retransmisji.
+            >>> d) Większa sieć ma mniejszą wydajność z powodu liczniejszych kolizji. - to jeśli wielokrotnego wyboru?
+            e) Większa sieć ma większą wydajność z powodu lepszego nasycenia łącza)
+            f) Wydajność sieci nie zmienia się wraz z liczbą transmitujacych stacji.
+
+            [#1] Podczas pomiaru przepustowości sieci wykorzystanie protokołu TCP może dać inne rezultaty niż w przypadku wykorzystania protokołu UDP:
+            >>> a) w przypadku występowania błędów transmisji.
+            b) z powodu działania mechanizmu retransmisji protokołu IEEE 802.11.
+            c) z powodu przesyłania potwierdzeń przez protokół UDP.
+            >>> d) z powodu większej nadmiarowości protokołu TCP.
+            >>> e) z powodu działania mechanizmu kontroli przeciążeń w protokole TCP. 
+            f) z powodu nadmiarowości wprowadzanej przez mechanizm RTS/CTS.
             
+            [#1] Ile jest pól adresowych w nagłówku MAC ramki danych standardu IEEE 802.11 oraz jaki jest ich rozmiar i funkcja?
+            a) 2 pola rozmiaru 6 B (source, destination)
+            b) 4 pola rozmiaru 4 B (source, transmitter, receiver, destination)
+            c) 5 pól rozmiaru 4 B (bssid, source, transmitter, receiver, destination)
+            d) 5 pól rozmiaru 6 B (bssid, source, transmitter, receiver, destination)
+            e) 2 pola rozmiaru 4 B (source, destination)
+            >>> f) 4 pola rozmiaru 6 B (source, transmitter, receiver, destination)
+
+            [#1] Czym jest WPA-Enterprise?
+            a) architekturą bezpieczeństwa sieci WLAN zakładającą podział na sieci wirtualne o różnym stopniu uprawnień użytkowników.
+            >>> b) sposobem uwierzytelniania w sieci WLAN z wykorzystaniem serwera NAS
+            c) architekturą sieci WLAN przeznaczoną do pokrycia zasięgiem większego obszaru (np. budynku) za pomocą połączonych ze sobą AP.
+            d) sposobem uwierzytelniania użytkowników w sieci przewodowej.
+            e) sposobem uwierzytelniania w sieci WLAN za pomocą predefiniowanego hasła)
+            f) sposobem uwierzytelniania w sieci WLAN za pomocą 8-cyfrowego PIN-u.
+
+            [#1] Czym jest i czemu służy repeater w sieciach WLAN?
+            a) To mechanizm łączenia kanałów radiowych w celu poprawy przepustowości łącza)
+            b) Powtarza odebrane ramki co pozwla zwiększyć prędkość transmisji w sieci WLAN.
+            c) Służy tworzeniu wirtualnych sieci WLAN porpzez duplikowanie wirtualnego interfejsu sieciowego.
+            >>> d) Powtarza odebrane ramki co pozwla zwiększyć zasięg sieci WLAN.
+            e) To inaczej mechanizm retransmisji utraconych ramek, poprawia niezawodność połączenia)
+            f) Pozwala analizować ruch sieciowy dzięki odbieraniu wszystkich ramek WLAN.
+
+            [#1] Za pomocą modułu TC można:
+            a) konfigurować funkcjonalność firewalla)
+            >>> b) konfigurować ograniczenia przepustowości dla wybranych klientów lub usług.
+            c) konfigurować czasowy dostęp do sieci WAN dla wybranych klientów.
+            d) tworzyć wirtualne sieci WLAN.
+            >>> e) ograniczyć przepustowość dostępu do sieci Internet dla wybranej sieci wirtualnej WLAN.
+            f) konfigurować funkcję NAT.
+
+            [#1] Tryb transmisji (modulacja i kodowanie) to:
+            a) DFS
+            b) wlan_mode
+            >>> c) MCS - Modulation Coding Scheme
+            d) GI
+            e) IBSS
+            f) QPSK+
+
+            [#1] Jakimi parametrami mogą różnić się sieci wirtualne rozgłaszane przez jeden interfejs fizyczny WLAN? 
+            >>> a) RTS_threshold
+            >>> b) sposób uwierzytelniania
+            c) kanał radiowy w obrębie danego pasma (np. 1 i 6)
+            >>> d) SSID
+            e) pasmo radiowe
+            >>> f) czy sieć jest ukryta
+
+            [#1] Jakie ramki IEEE 802.11 wymienia między sobą stacja i punkt dostępowy w procesie przyłączania się do sieci (do momentu rozpoczęcia transmisji danych użytkownika)?
+            a) CF-Poll, ATIM, ramki authentication, association (request i response)
+            b) association (request i response), ramki ATIM, ramki authentication,
+            c) RTS, CTS, association (request i response) ramki authentication
+            >>> d) probe (request i response), ramki authentication, association (request i response)
+            e) probe (request i response), ramki authentication,
+            f) beacon request, beacon, association (request i response), ramki authentication,
+
+            [#1] Wektor inicjalizujący IV w protokole WEP ma długość: 
+            a) 2 b
+            b) 6 b
+            c) 1 B
+            d) 2 B
+            >>> e) 3 B
+            f) 4 B
+
+                        
 
 
 

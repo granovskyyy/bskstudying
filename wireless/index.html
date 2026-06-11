@@ -1,0 +1,1156 @@
+<!doctype html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BSKKOLOS</title>
+        <style>
+            :root {
+                /* Nowa paleta kolorów - Dark Mode */
+                --primary: #60a5fa; /* Jasny niebieski */
+                --primary-hover: #3b82f6;
+                --success: #22c55e; /* Soczysta zieleń */
+                --success-bg: #052e16; /* Ciemne tło dla sukcesu */
+                --success-border: #15803d;
+
+                --error: #f87171; /* Jasny czerwony */
+                --error-bg: #450a0a; /* Ciemne tło dla błędu */
+                --error-border: #b91c1c;
+
+                --bg: #0f172a; /* Bardzo ciemne tło strony (Slate 900) */
+                --card: #1e293b; /* Ciemne tło kart (Slate 800) */
+                --text-main: #f1f5f9; /* Prawie biały tekst */
+                --text-muted: #94a3b8; /* Szary tekst podrzędny */
+                --border: #334155; /* Kolor obramowań */
+                --input-bg: #020617; /* Tło inputów/przycisków opcji */
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: var(--bg);
+                color: var(--text-main);
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            header {
+                text-align: center;
+                margin-bottom: 40px;
+                padding: 20px;
+                background: var(--card);
+                border-radius: 12px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--border);
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--primary);
+                font-size: 1.8rem;
+            }
+            p.subtitle {
+                color: var(--text-muted);
+                margin-top: 5px;
+            }
+
+            .quiz-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                background: var(--card);
+                padding: 15px;
+                border-radius: 8px;
+                position: sticky;
+                top: 20px;
+                z-index: 10;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border);
+            }
+
+            .score-box {
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+            .score-val {
+                color: var(--primary);
+            }
+
+            .question-card {
+                background: var(--card);
+                padding: 25px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s;
+                border: 1px solid var(--border);
+                border-left: 5px solid transparent;
+            }
+
+            .question-card.correct {
+                border-left-color: var(--success);
+            }
+            .question-card.wrong {
+                border-left-color: var(--error);
+            }
+
+            .q-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: bold;
+            }
+
+            .q-text {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+                font-weight: 600;
+                color: var(--text-main);
+            }
+
+            .options-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .option-btn {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border: 2px solid var(--border);
+                border-radius: 8px;
+                cursor: pointer;
+                background: var(--input-bg);
+                transition: all 0.2s;
+                text-align: left;
+                position: relative;
+                color: var(--text-main);
+            }
+
+            .option-btn:hover {
+                background-color: #334155;
+                border-color: #64748b;
+            }
+
+            /* Styles for checked states */
+            input[type="radio"],
+            input[type="checkbox"] {
+                margin-right: 15px;
+                transform: scale(1.2);
+                accent-color: var(--primary);
+            }
+
+            /* Feedback styles - Adjusted for Dark Mode */
+            .option-btn.is-correct {
+                background-color: var(--success-bg);
+                border-color: var(--success-border);
+                color: #86efac; /* Light green text */
+            }
+
+            .option-btn.is-wrong {
+                background-color: var(--error-bg);
+                border-color: var(--error-border);
+                color: #fca5a5; /* Light red text */
+            }
+
+            .option-btn.should-be {
+                border-color: var(--success);
+                border-style: dashed;
+                color: var(--success);
+            }
+
+            /* Disabled state for inputs after checking */
+            input:disabled {
+                cursor: not-allowed;
+            }
+            .option-btn.disabled {
+                cursor: default;
+                opacity: 0.9;
+            }
+
+            .actions {
+                margin-top: 20px;
+                text-align: right;
+            }
+
+            button.check-btn {
+                background-color: var(--primary);
+                color: #0f172a; /* Dark text on bright button */
+                border: none;
+                padding: 10px 25px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1rem;
+                transition: background 0.2s;
+            }
+
+            button.check-btn:hover {
+                background-color: var(--primary-hover);
+            }
+
+            /* Specific override for reset button to look dark grey */
+            button.reset-style {
+                background-color: #334155 !important;
+                color: white !important;
+            }
+            button.reset-style:hover {
+                background-color: #475569 !important;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            /* LaTeX like formatting replacement */
+            .math {
+                font-family: "Times New Roman", serif;
+                font-style: italic;
+            }
+
+            /* Explanation styles */
+            .explanation-container {
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 1px dashed var(--border);
+            }
+
+            .show-explanation-btn {
+                background-color: #4b5563;
+                color: var(--text-main);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background 0.2s;
+                margin-right: 10px;
+            }
+
+            .show-explanation-btn:hover {
+                background-color: #6b7280;
+            }
+
+            .explanation-text {
+                margin-top: 12px;
+                padding: 15px;
+                background: #1a1a2e;
+                border-left: 3px solid var(--primary);
+                border-radius: 0 8px 8px 0;
+                color: #a5b4fc;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                white-space: pre-wrap;
+            }
+
+            .explanation-text.hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>TISB EGZAMIN</h1>
+                <p class="subtitle">
+                    Przygotowanie do egzamninu z TiSB - Nauka poprzez quizy i interaktywne pytania!
+                </p>
+                <p class="subtitle">
+                     I Termin - 24 czerwca 2026
+                </p>
+                <p class="subtitle">
+                     II Termin - 1 lipca 2026
+                </p>
+                <p class="subtitle">
+                     Powodzenia wszystkim! 🍀
+                </p>
+            </header>
+
+            <div class="quiz-controls">
+                <div id="progress">Pytanie: 0 / 0</div>
+                <div class="score-box">
+                    Wynik: <span id="score" class="score-val">0</span>%
+                </div>
+                <button class="check-btn reset-style" onclick="resetQuiz()">
+                    Resetuj
+                </button>
+            </div>
+
+            <div id="quiz-container"></div>
+        </div>
+
+        <script>
+            // --- DANE WEJŚCIOWE (RAW DATA) ---
+            const rawData = `
+            [#1] Zaznacz zdania prawdziwe:
+            a) diagram konstelacji pozwala nam odczytać
+            >>> b) diagram konstelacji pozwala nam odczytać
+            >>> c) diagram konstelacji pozwala nam odczytać fazę
+
+            [#1] Bezprzewodowa transmisja ma data rate of 1Mbps.
+            a) This transmission uses spectrum spreading
+            b) uses OFDM
+            >>> c) uses BPSK modulation
+            >>> d) carrier frequency is 200MHz
+
+            [#1] Indicate the correct statements about the direct
+            a) this technique reduces the noise level in the radio
+            b) for the same data rate, this technique requires less
+            >>> c) in this technique the user's data is combined with a
+            >>> d) this technique allows us to design a system that
+
+            [#1] The plot shows the observed signal spectrum. What wireless device could be the source of this signal? (Widmo w kształcie pojedynczej górki o szerokości 22MHz)
+            a) a GSM base station
+            b) a GSM phone
+            >>> c) a Wi-Fi router
+            >>> d) a Wi-Fi network interface card
+
+            [#1] Indicate the correct statements about Wi-Fi:
+            a) the best data rate is achieved using a BPSK
+            b) in the OFDM transmission modes all carrier
+            >>> c) the best range is achieved using the spectrum spreading technique
+            >>> d) the fastest data rate is achieved using the OFDM technique
+
+            [#1] To increase the range of a wireless system, we could:
+            a) decrease the output power
+            b) change the modulation from MSK to FSK with modulation index equal 0.5
+            >>> c) change the modulation from 64 QAM to 16 QAM
+            >>> d) Change the modulation from QPSK to BPSK
+
+            [#1] Indicate the correct statements:
+            a) scrambler reorders the user data to help correct the errors in the receiver
+            b) scrambler corrects the data broken during the radio transmission
+            >>> c) at the output of a scrambler we obtain pseudorandom data
+            >>> d) scrambler has influence on the shape of the spectrum
+
+            [#1] W standardzie LTE synchronizacja w dziedzinie czasu
+            >>> a) Znalezienie oraz zdekodowanie sygnałów P-SS IS-SS
+            b) Znalezienie oraz zdekodowanie wyłącznie sygnału
+            c) Odczytanie wiadomości MIB (ang. Master
+            d) Znalezienie oraz zdekodowanie wyłącznie sygnału
+
+
+            [#1] Jeśli telefon (UE) pracujący w standardzie LTE wykonuje tzw. handover typu Inter-RAT oznacza to, ze:
+            a) przechodzi między dwoma tzw. komórkami (ang. cells), które pracują na tych samych częstotliwościach i są obsługiwane przez dwie stacje bazowe
+            b) przechodzi między dwoma tzw. komórkami (ang. cells), które pracują na różnych częstotliwościach i są obsługiwane przez dwie stacje bazowe
+            >>> c) przechodzi między dwoma tzw. komórkami (ang. cells), które pracują na różnych częstotliwościach i innych standardach radiokomunikacyjnych.
+            d) przechodzi między tzw. komórkami (ang. cells), które pracują na różnych częstotliwościach i są obsługiwane przez jedną stację bazową.
+
+            [#1] W standardzie LTE Rel. 13, w transmisji w górę" (ang. uplink) 
+            a) OFDMA
+            >>> b) SC-FDMA
+            c) CDMA
+            d) G-FDMA
+
+            [#1] W standardzie 5G ilość tzw. slotów czasowych (ang. time slots):
+            a) Jest stała i nie zależy od zmian szerokości podnośnych.
+            >>> b) Jest rekonfigurowalna i zwiększa się wraz ze wzrostem szerokości podnośnych.
+            c) Jest taka sama jak w standardzie LTE-Advanced.
+            d) Jest rekonfigurowalna i zmniejsza się wraz ze wzrostem szerokości podnośnych.
+
+
+            [#1] Pewien nadajnik obsługuje metodę transmisji OFDM i modulację 64QAM. Na jakiej czestotliwości będzie znajdowała się podnośna o nr 24, zakładając częstotliwość próbkowania fp=20MHz i rozmiar FFT=128?
+            >>> a) 3.75 MHz
+            b) 1.875 MHz
+            c) 156.25 kHz
+            d) 833.34 kHz
+
+            [#1] Kody C/A stosowane w systemach GNSS
+            >>> a) są kodami PRN, nie zawierają informacji o efemerydach.
+            b) zapewniają identyfikację danego użytkownika.
+            c) zapobiegają odszyfrowaniu sygnału przez osoby nieupoważnione.
+            >>> d) umożliwiają pomiar przedziału czasowego niezbędnego do obliczenia pseudoodległości.
+
+            [#1] System A-GNSS-system wspomagania szybkiego startu umożliwia odbiór sygnału GNSS wewnątrz pomieszczeń poprzez dostarczenie danych z satelity szybszym łączem.
+            >>> PRAWDA
+            FAŁSZ
+
+            [#1] Redukcja błędów powodowanych przez refrakcję jonosferyczną bezpośrednio w odbiorniku GPS możliwa jest dzięki zastosowaniu dwuczęstotliwościowego odbiornika. 
+            >>> PRAWDA
+            FAŁSZ
+
+            [#1] W standardzie LTE Ret. 11, w transmisji (ang. downlink) stosuje się wielodostęp metodą
+            >>> a) OFDMA
+            b) SC-FDMA
+            c) CDMA
+            d) G-FDMA
+
+            [#1] W standardzie SG szerokość podnośnych (w
+            a) Jest rekonfigurowalna i ilość tzw slotów czasowych (ang time slot) jest stała
+            b) Nie ma możliwości zmiany szerokości pasma zajmowanego przez podnośne
+            c) Są takie same jak w standardzie LTE-Advanced.
+            >>> d) Jest rekonfigurowalna i ilość tzw. slotów czasowych (ang time stor) jest ściśle skorelowana z tym faktem
+
+            [#1] Pewien nadajnik obsługuje metode transmisji OFDM i modulacja QPSK. Na jakiej częstotliwości będzie znajdowała się podnośna o numerze 96, zakładając częstotliwość próbkowania fp=40MHz i rozmiar FFT=512
+            >>> a) 7.5 MHz
+            b) 78.125 kHz
+            c) 416.6 kHz
+            d) 3.75 MHz
+
+            [#1] W jaki sposób wartość stosunku Eb/No mierzona dla kanału radiowego wpływa na diagram konstelacji sygnału odbierającego przez radioodbiornik?
+            a) Widoczne są fluktuacje jedynie amplitudy sygnału
+            b) Widoczne są fluktuacje jedynie fazy sygnału
+            >>> c) Mogą występować fluktuacje zarówno amplitudy jak i fazy
+            d) Zmiana wartości Eb/No nie wpływa w żaden sposób na sygnał odbierany
+
+            [#1] Kody C/A stosowane w systemach GNSS:
+            a) zawierają informację o efemerydach
+            >>> b) zapewniają identyfikację danego satelity
+            c) zapobiegają odszyfrowaniu sygnału przez osoby nieupoważnione
+            >>> d) umożliwiają pomiar przedziału czasowego niezbędnego do obliczenia
+
+            [#1] System A-GNSS - system wspomagania szybkiego startu umożliwia odbiór sygnały GNSS wewnątrz pomieszczeń poprzez zwiększenie czułości odbiornika
+            >>> PRAWDA
+            FAŁSZ
+
+            [#1] System bezprzewodowy ma 2 tryby transmisji. Pierwszy wykorzystuje modulację 16QAM i prędkość transmisji 4Mbit/s. W drugim zastosowano 64QAM a prędkość dobrano tak aby nie zmieniła się szerokość pasma. Wskaż prawdziwe:
+            a) W drugim trybie prędkość transmisji wynosi 8Mbit/s
+            >>> b) Drugi tryb transmisji jest mniej odporny na szum
+            c) Drugi tryb transmisji jest bardziej odporny na wielodrogowość
+            d) Drugi tryb transmisji ma większy zasięg
+
+            [#1] Podaj liczbę i jednostkę: transmisja bezprzewodowa z prędkością 10Mbit/s i modulacją 16QAM pracująca na częstotliwości 1GHz nie wymaga większej szerokości pasma niż: 
+            a) 5 MHz
+            b) 6.7 MHz
+            c) 1.25 MHz
+            >>> d) 2.5 MHz
+
+            [#1] System bezprzewodowy wykorzystuje odbiornik kwadraturowy (I/Q) i modulację BPSK. Wskaż zdania poprawne:
+            >>> a) W odbiorniku można zastosować oscylator o częstotliwości równej częstotliwości fali nośnej
+            b) Szerokość pasma niezbędnego do transmisji zależy od częstotliwości nośnej
+            >>> c) Do poprawnej modulacji w nadajniku wystarczy użyć kanału I
+            >>> d) Gdyby zmieniono modulację na 16QAM, to zmniejszyłby sie zasięg transmisji
+
+            [#1] Przeplot w systemach bezprzewodowych:
+            a) pozwala na kompresję danych
+            >>> b) pozwala na poprawną pracę systemu mimo chwilowych zaników  selektywnych
+            c) pozwala na wykorzystanie tej samej częstotliwości nośnej przez kilku użytkowników
+            d) polega na wymnożeniu ciągu danych z ciągiem pseudolosowym
+            
+            [#1]  W wyniku zastosowania techniki rozpraszania widma sekwencją bezpośrednią
+            >>> a) transmisja stała się bardziej odporna na zakłócenia wielopasmowe
+            b) zmniejszyła się szerokość pasma niezbędnego do transmisji bezprzewodowej
+            c) zmniejszył się poziom szumów w kanale radiowym
+            >>> d) możliwe jest zaprojektowanie systemu działającego bezbłędnie przy SNR na wejściu odbiornika równym-3dB
+
+            [#1] Wskaż prawdziwe:
+            a) W systemie WiFi wykorzystuję się modulację FSK
+            >>> b) W systemie WiFi wykorzystuje się nadmiarowe sprawności 3/4
+            c) WiFi w trybie OFDM osiąga mniejszy zasię niż w trybie z rozpraszaniem
+            >>> d) WiFi w trybie OFDM osiąga mniejszy zasię niż w trybie z rozpraszaniem widma
+
+            [#1] Wskaż prawdziwe:
+            >>> a) W systemie GSM/EDGE zmiana modulacji z GMSK na 8-PSK powoduje zmniejszenie zasięgu użytecznego stacji bazowej
+            b) Sekwencja treningowa w GSM pozwala na współdzielenie zasobów stacji bazowej przez wielu użytkowników
+            c) W systemie TETRA wykorzystuje się modulację TMSK
+            d) W systemie TETRA wykorzystuje się technikę rozpraszania widma
+
+            [#1] System bezprzewodowy ma 2 tryby tranmisji. Pierwszy QPSK i prędkość 12Mbit/s. Drugi 16QAM i prędkość taka aby nie zmienić szerokości pasma:
+            >>> a) W drugim prędkość transmisji wynosi 24Mbit/s
+            b) Drugi tryb jest bardziej odporny na szum
+            c) Drugi tryb jest bardziej odporny na wielodrogowość
+            >>> d) Drugi tryb ma mniejszy zasięg
+
+            [#1] W wyniku zastosowania techniki rozpraszania widma
+            >>> a) transmisja stała się bardziej odporna na zakłócenia wąskopasmowe
+            >>> b) zwiększyła się szerokość pasma niezbędnego do transmisji bezprzewodowej
+            >>> c) uzyskano zysk przetwarzania równy 11
+            >>> d) możliwe jest zaprojektowanie odbiornika działającego przy SNR na wejściu mniejszym niż 0 dB
+
+            [#1] System bezprzewodowy oparto o modulację QPSK i zastosowano odbiornik kwadraturowy (I/Q). Wskaż prawdziwe:
+            a) Szerokość pasma niezbędnego do transmisji zależy od częstotliwości nośnej
+            >>> b) W odbiorniku można zastosować oscylator o częstotliwości równej częstotliwości nośnej
+            c) Zwiększając częstotliwość transmisji należy poszerzyć pasmo filtru dolnoprzepustowego w odbiorniku
+            d) Sygnał z kanałów I i Q w odbiorniku należy zsumować, a następnie zastosować filtr dolnoprzepustowy
+
+            [#1] Wskaż prawdziwe
+            a) WiFi w trybie z rozpraszaniem widma osiąga się większą prędkość transmisji niż w OFDM
+            >>> b) WiFi w trybie z rozpraszaniem widma osiąga się większy zasięg niż OFDM
+            c) WiFi w trybie z kodowaniem o sprawności 1/2 osiąga mniejszy zasięg niż z kodowaniem 3/4
+            d) W systemie WiFi wykorzystuje się modulację FSK
+
+            [#1] Wskaż prawdziwe:
+            >>> a) W systemie GSM/EDGE zmiana modulacji z 8-PSK na GMSK zwiększy zasięg użyteczny stacji bazowej
+            >>> b) Sekwencja treningowa w GSM pozwala na przygotowanie kanału radiowego na transmisję pakietu
+            c) w systemie TETRA wykorzystuje się modulację TMSK
+            d) W systemie TETRA wykorzystuje się technikę rozpraszania widma
+
+            [#1] Aby zwiększyć zasięg systemu bezprzewodowego
+            a) Zmienić modulację z 16QAM na 64QAM
+            b) Zmienić kodowanie z 1/2 na 3/4
+            >>> c) Zastąpić nadajniki 30mW nadajnikami 30dBm (1W) bo 10^(30/10)
+            d) Zmienić modulację MSK na modulację FSK z indeksem modulacji równym 0.5
+
+            [#1] Podaj szerokość pasma wymaganego do transmisji częstotliwości 1GHz z prędkością 14Mbit/s, modulacją 16QAM i filtrem Square Root Raised Cosine z Rolloff = 1
+            a) 5 MHz
+            >>> b) 7 MHz
+            c) 14 MHz
+            d) 8 MHz
+
+            [#1] Technika dodawania tzw. cyklicznego prefixu (ang. Cyclix Prefix) w standardzie LTE pozwala na:
+            >>> a) Zniwelowanie wpływu interferencji międzysymbolowych w odbiorniku
+            b) Zwiększenie ilości obsługiwanych telefonów przez stację bazową
+            >>> c) Zniwelowanie efektów związanych z wielodrogowością
+            d) Zwiększenie prędkości transmisji danych
+
+            [#1] Szybka transformata Fouriera (FFT) jest stosowana w nadajniku pracującym w standardzie LTE:
+            PRAWDA
+            >>> FAŁSZ
+
+            [#1] Przy zwiększaniu częstotliwości pracy urządzeń pracujących w standardzie 5G, by uniknąć znaczącej dewiacji częstotliwości odbieranego sygnału:
+            >>> a) Szerokości podnośnych powinny zwiększyć się
+            >>> b) Ilość tzw. slotów czasowych w sub-ramce (subframe) powinna zostać zwiększona
+            c) Ilość tzw. slotów czasowych w sub-ramce powinna zostać zmniejszona
+            d) Nie ma możliwości rekonfiguracji szerokości podnośnych oraz ilości slotów czasowych w standardzie 5G
+
+            [#1] Scheduler w standardzie LTE Rel. 12:
+            >>> a) Jest zaimplementowany wyłącznie w stacji bazowej (eNB) 
+            b) Jest zaimplementowany zarówno w stacji bazowej (eNB) jak i w telefonie (UE) w warstwie MAC
+            >>> c) Wykorzystuje mechanizmy AMC w celu zwiększenia prędkości nadawania danych
+            >>> d) Relokuje zasoby radiowe dla poszczególnych użytkowników co TTI = 1ms
+
+            [#1] Pewne urządzenie nadawczo-odbiorcze pozwalające na transmisję OFDM obsługuje FFT o rozmiarze 512. Jaka jest częstotliwość próbkowania jeśli podnośna o numerze 10 została zaobserwowana na częstotliwości 500kHz?
+            >>> a) 25,6 MHz
+            b) 21,37 MHz
+            c) 12,8 MHz
+            d) 51,2 MHz
+
+            [#1] Jeśli wartość stosunku Eb/No na wejściu pewnego radioodbiornika uległa gwałtownemu zmniejszeniu, to w jaki sposób nadajnik powinien zmienić wartościowość używanej modulacji, aby zapewnić najbardziej optymalne parametry transmisji? (Wartość BER powinna być możliwie jak najmniejsza)
+            >>> a) Powinien zmniejszyć wartościowość modulacji (np. z 64QAM do 16QAM)
+            b) Powinien zwiększyć wartościowość modulacji (np z 16QAM na 64QAM)
+            c) Wartościowość modulacji nie ma znaczącego wpływu na odpowiedni odbiór sygnału, więc może ulegać dowolnej zmianie
+            d) Powinien zachować używaną wartościowość modulacji i zmniejszyć moc nadawanego sygnału
+
+            [#1] Sys. bezprzewodowy ma 2 tryby transmisji. Pierwszy wykorzystuje QPSK i prędkość transmisji 4Mbit/s. W 2gim trybie zastosowano 16QAM a prędkość transmisji dobrano tak aby nie zmieniła się szerokość pasma. Wskaż prawdziwe
+            a) W 2gim trybie prędkość wynosi 16Mbit/s
+            b) 2gi tryb jest bardziej odporny na szumy
+            c) 2gi tryb jest bardziej odporny na wielodrogowość
+            >>> d) 2gi tryb ma mniejszy zasięg
+
+            [#1]  W wyniku zastosowania techniki rozpraszania widma sekwencją bezpośrednią:
+            a) Zmniejszył się poziom szumy w kanale radiowym
+            >>> b) Zwiększyła się szerokość pasma niezbędnego do transmisji bezprzewodowej
+            >>> c) Transmisja stała się bardziej odporna na zakłócenia wąskopasmowe
+            >>> d) Możliwe jest zaprojektowanie systemu działającego bezbłędnie przy SNR na wejściu odbiornika o równym 0 dB 
+
+            [#1] Przeplot w systemach bezprzewodowych:
+            a) polega na wymnożeniu ciągu danych ciągiem pseudolosowym
+            b) pozwala na wykorzystanie tej samej częstotliwości nośnej przez kilku użytkowników
+            >>> c) pozwala na poprawną pracę systemu mimo chwilowych zaników selektywnych 
+            d) pozwala na kompresję danych
+
+            [#1] System bezprzewodowy oparto o modulację BPSK i zastosowano odbiornik kwadraturowy (i/Q). Wskaż prawde:
+            a) szerokość pasma niezbędnego do transmisji zależy od częstotliwości nośnej
+            >>> b) w odbiorniku można zastosować oscylator o częstotliwości równej częstotliwości fali nośnej 
+            >>> c) do poprawnej modulacji w nadajniku wystarczy użyć kanału I
+            d) gdy zmieniono modulację na BPSK, to zwiększyłby się zasięg transmisji
+
+            [#1] Proszę wskazać zdania prawdziwe:
+            >>> a) W sys WiFi wykorzystuje się modulację FSK 
+            b) W sys WiFi wykorzystuje się kodowanie nadmiarowe o sprawności 4/3
+            c) WiFi w trybie OFDM osiąga większą prędkość transmisji niż w trybie z rozpraszaniem widma
+            d) WiFi w trybie OFDM osiąga większy zasięg niż w trybie z rozpraszaniem widma
+
+            [#1] Wskaż prawdziwe
+            >>> a) W sys GSM/EDGE zmiana modulacji z GMSK na 8PSK powoduje zmniejszenie zasięgu użytecznego stacji bazowej
+            b) Sekwencja treningowa w GSM pozwala na współdzielenie zasobów stacji bazowej przez wielu użytkowników
+            c) W systemie TETRA wykorzystuje się modulację GMSK
+            d) W systemie TETRA wykorzystuje się technikę rozpraszania widma
+
+            [#1] Aby zwiększyć zasięg sys bezprzewodowego
+            >>> a) zmienić modulację z 64QAM na 16QAM
+            b) zmienić kodowanie z 1/2 na 3/4
+            c) zastąpić nadajniki 10mW nadajnikami 10dBm
+
+
+            [#1] Transmisja bezprzewodowa z prędkością 30Mbit/s i modulacją 64QAM pracująca na częstotliwości 200MHz nie wymaga większej szerokości pasma niż: ???
+            a) 20 MHz
+            b) 5 MHz
+            >>> c) 10 MHz
+            d) 30 MHz
+
+            [#1] W standardzie LTE synchronizacja w dziedzinie częstotliwości następuje poprzez:
+            a) znalezienie sygnału P-SS i S-SS
+            >>> b) znalezienie zerowej podnośnej (subcarrier)
+            c) odczytanie wiadomości MIB (Master Information Block)
+            d) znalezienie wyłącznie sygnału synchronizującego P-SS
+
+            [#1] Na czym polega efekt LOL spotykany w urządzeniach nadawczo-odbiorczych?
+            a) Polega na występowaniu dodatkowych interferencji międzysymbolowych
+            b) Jest efektem podlegającym na zmniejszeniu mocy sygnału z heterodyny, który pogarsza odbiór sygnału radiowego
+            >>> c) Jest efektem związanym z przemianą częstotliwości i polega na "przecieku" sygnału z heterodyny do sygnału radiowego (w nadajniku)
+            d) Jest efektem związanym z wewnętrznymi niedopasowaniami impedancyjnymi mieszacza, przez co sygnał z heterodyny zostaje stłumiony, a tym samym, sygnał radiowy odbierany przez radioodbiornik jest trudny do przetworzenia
+
+            [#1] W standardzie LTE Rel.11 w tranmisji w dól (downlink)
+            >>> a) OFDMA
+            b) SC-FDMA
+            c) CDMA
+            d) G-FDMA
+            a) OFDMA
+
+            [#1] W standardzie 5G szerokość podnośnych (w dziedzinie częstotliwości):
+            a) Jest rekonfigurowalna i ilość tzw slotów czasowych
+            b) Nie ma możliwości zmiany szerokości pasma zajmowanego przez podnośne
+            c) Są takie same jak w standardzie LTE-Advanced
+            >>> d) Jest rekonfigurowalna i ilość tzw. slotów czasowych jest ściśle skorelowana z tym faktem
+
+            [#1] Pewien nadajnik obsługuje metodę tranmisji OFDM i modulację QPSK. Na jakiej częstotliwości będzie znajdowałą się podnośna o nr 96, zakładając że fp=40MHz i rozmiar FFT=512
+            >>> a) 7.5 MHz
+            b) 78.124 kHz
+            c) 416.6 kHz
+            d) 3.75 MHz
+
+            [#1] Kody C/A stosowane w systemach GNSS
+            a) zawierają informację o efemerydach
+            >>> b) zapewniają identyfikację danego satelity
+            c) zapobiegają odszyfrowaniu sygnału przez osoby nieupoważnione
+            >>> d) umożliwiają pomiar przedziału czasowego niezbędnego do obliczenia pseudoodległości
+
+            [#1] System A-GNSS umożliwia odbiór sygnału GNSS wewnątrz pomieszczeń poprzez zwiększenie czułości odbiornika 
+            >>> PRAWDA
+            FAŁSZ
+
+            [#1] System bezprzewodowy oparto o modulację QPSK i zastosowano odbiornik kwadraturowy (I/Q). Wskaż prawdziwe:
+            a) szerokość pasma niezbędnego do transmisji zależy od częstotliwości nośnej
+            >>> b) w odbiorniku można zastosować oscylator o częstotliwości równej częstotliwości nośnej
+            c) zwiększając częstotliwość transmisji, należy poszerzyć pasmo filtru dolnoprzepustowego w odbiorniku
+            d) sygnał z kanałów I i Q należy zsumować, a następnie zastosować filtr dolnoprzepustowy
+
+            [#1] Wskaż prawdziwe
+            a) WiFi w trybie z rozpraszaniem widma osiąga się większą prędkość niż w OFDM
+            >>> b) WiFi z rozpraszaniem widma osiąga się większy zasięg niż w OFDM
+            c) WiFi w trybie z kodowaniem o sprawności 1/2 osiąga mniejszy zasięg niż z kodowaniem 3/4
+            d) W WiFi wykorzystuje się modulację FSK 
+
+            [#1] Wskaż prawdziwe
+            >>> a) W systemie GSM/EDGE zmiana modulacji z 8PSK na GMSK zwiększy zasięg użyteczny stacji bazowej
+            b) Sekwencja treningowa w GSM pozwala na przygotowanie kanału radiowego na transmisję pakietu
+            c) W systemie TETRA wykorzystuje się modulacje TMSK
+            d) W systemie TETRA wykorzystuje się technikę rozpraszania widma
+
+            [#1] Aby zwiększyć zasięg sys bezprzewodowego można:
+            a) zmienić modulację z 16QAM na 64QAM
+            b) zmienić kodowanie z 1/2 na 3/4
+            >>> c) zastąpić nadajniki 30mW nadajnikami 30dB
+            d) zmienić modulację MSK na FSK z indeksem modulacji 0.5
+
+            [#1] Szybka transformata Fouriera (FFT) jest stosowana w nadajniku pracującym w standardzie LTE?
+            PRAWDA
+            >>> FAŁSZ
+
+            [#1] Przy zwiększaniu częstotliwości pracy urządzeń pracujących w 5G, by uniknąć znaczącej dewiacji częstotliwości odbieranego sygnału:
+            >>> a) szerokości podnośnych powinny zwiększyć się
+            >>> b) ilość tzw. slotów czasowych w subframe powinna zostać zwiększona
+            c) ilosć tzw slotów czasowych w subframe powinna zostać zmniejszona
+            d) nie ma możliwości rekonfiguracji szerokości podnośnych oraz ilości slotów czasowych w 5G
+
+            [#1] Scheduler w standardzie LTE Rel12:
+            >>> a) Jest zaimplementowany w stacji bazowe eNB
+            b) Jest zaimplementowany zarówno w stacji bazowej eNB jak i telefonie UE w warstwie MAC
+            >>> c) Wykorzystuje mechanizmy AMC w celu zwiększenia prędkości nadawania danych
+            >>> d) Relokuje zasoby radiowe dla poszczególnych użytkowników co TTI=1ms
+
+            [#1] Pasmo L(1-2GHz) wykorzystywane w systemach GNSS w porównaniu do nośnych stosowanych w pierwszym systemie nawigacji satelitarnej Transit(150MHz i 400MHz) skutkuje:
+            a) mniejszymi stratami propagacyjnymi w przestrzeni kosmicznej (wartość FSLF)
+            >>> b) mniejszym wpływem zjawiska refrakcji jonsferycznej
+            c) mniejszą zależnością od warunków pogodowych (np. deszczu)
+            d) zwężeniem szerokości listka głównego i w rezultacie bardziej efektywnym wykorzystaniem pasma
+
+            [#1] Przeplot w systemach bezprzewodowych
+            a) pozwala na kompresję danych
+            >>> b) pozwala na poprawną pracę systemu mimo chwilowych zaników selektywnych
+            c) pozwala na wykorzystanie tej samej częstotliwości przez kilku użytkowników
+            d) polega na wymnożeniu ciągu danych z ciągiem pseudolosowym
+
+            [#1] Jaka powinna być ilośc anten po stronie nadawczej (N) i odbiorczej (O) aby zapewnić transmijsę danych za pomocą SIMO?
+            >>> a) N=1 O=8
+            b) N=4 O=1
+            c) N=2 O=2
+            d) N=2 O=8
+
+            [#1] Jaka modulacja pozwala na zapis 6 bitów przy użyciu jednego symbolu?
+            >>> a) 64QAM
+            b) 32QAM
+            c) QPSK
+            d) 16QAM
+            [#1] Efektywna moc wypromieniowana w kierunku Ziemi przez satelitę GNSS wynosi 26.8dBW, straty mocy w przestrzeni kosmicznej wynosiły -182.4dB, straty mocy w atmosferze spowodowały dodatkowo zmniejszenie mocy o połowę. Jaki poziom mocy dotrze do anteny odbiornika GNSS.
+            >>> a) -156,1 dBW
+            b) -180 dBW
+            c) -200.4 dBW
+            d) -144 dBW
+            [#1] Jaka powinna być ilośc anten po stronie nadawczej (N) i odbiorczej (O) aby zapewnić transmijsę danych za pomocą MIMO?
+            >>> a) N=3 O=3
+            b) N=4 O=1
+            c) N=2 O=4
+            d) N=2 O=8
+
+
+`;
+
+            // --- LOGIKA APLIKACJI ---
+
+            function cleanText(text) {
+                return text
+                    .replace(/lambda/gi, "λ")
+                    .replace(/deg/gi, "°")
+                    .replace(/sqrt/gi, "√")
+                    .replace(/ohm/gi, "Ω")
+                    .replace(/alpha/gi, "α")
+                    .replace(/beta/gi, "β");
+            }
+
+            // Fisher-Yates shuffle
+            function shuffleArray(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function parseData(data) {
+                const questions = [];
+                // Split by [#1] marker
+                const blocks = data
+                    .split(/\[#1\]/)
+                    .filter((x) => x.trim().length > 0);
+
+                console.group("📋 PARSOWANIE PYTAŃ - RAPORT");
+                console.log(`Znaleziono ${blocks.length} bloków [Q]`);
+
+                blocks.forEach((content, idx) => {
+                    const blockNum = idx + 1;
+                    const previewText =
+                        content.substring(0, 80).replace(/\n/g, " ").trim() +
+                        "...";
+
+                    // Check for explanation (after :: separator)
+                    let mainContent = content;
+                    let explanation = "";
+                    const explanationMatch = content.split(/\n::\s*/);
+                    if (explanationMatch.length > 1) {
+                        mainContent = explanationMatch[0];
+                        explanation = cleanText(
+                            explanationMatch.slice(1).join("\n").trim(),
+                        );
+                    }
+
+                    // Split content into Question and Answers
+                    // Find first occurrence of A) or a) - POPRAWIONE REGEX
+                    // Obsługuje: a), >>a), >>>a), >a), >>>>a) itd.
+                    const match = mainContent.match(
+                        /(\n|^)\s*(>{1,4})?\s*[a-zA-Z]\)/,
+                    );
+                    if (!match) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} POMINIĘTY - brak odpowiedzi (nie znaleziono wzorca "a)" lub ">>>a)")`,
+                        );
+                        console.warn(`   Treść: "${previewText}"`);
+                        console.warn(
+                            `   Pełna treść bloku:`,
+                            mainContent.substring(0, 300),
+                        );
+                        return;
+                    }
+
+                    // ZACHOWAJ PRZEJŚCIA DO NOWEJ LINII W PYTANIU
+                    const qText = mainContent.substring(0, match.index);
+                    // Usuń puste linie na początku i końcu, ale zachowaj wewnętrzne przejścia
+                    const qTextClean = qText
+                        .replace(/^\s*\n/, "")
+                        .replace(/\n\s*$/, "");
+
+                    const answersBlock = mainContent.substring(match.index);
+
+                    const answers = [];
+                    const skippedLines = [];
+
+                    // NOWY ALGORYTM: Łączy wieloliniowe odpowiedzi
+                    // Regex do wykrycia początku odpowiedzi: opcjonalne > + litera + )
+                    const answerStartRegex = /^(>{0,4})\s*([a-zA-Z])\)/;
+
+                    const lines = answersBlock.split(/\n/);
+                    let currentAnswer = null;
+
+                    lines.forEach((line, lineIdx) => {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine.length === 0) {
+                            // Pusta linia - NIE dodawaj przejścia do nowej linii
+                            // (puste linie są separatorami między odpowiedziami, nie częścią odpowiedzi)
+                            return;
+                        }
+
+                        const answerMatch = trimmedLine.match(answerStartRegex);
+
+                        if (answerMatch) {
+                            // To jest początek nowej odpowiedzi
+                            // Zapisz poprzednią odpowiedź jeśli istnieje (po usunięciu trailing whitespace)
+                            if (currentAnswer !== null) {
+                                currentAnswer.text = currentAnswer.text.replace(
+                                    /\s+$/,
+                                    "",
+                                );
+                                answers.push(currentAnswer);
+                            }
+
+                            const arrows = answerMatch[1];
+                            const isCorrect = arrows.length >= 2; // >> lub więcej = poprawna
+                            const answerText = trimmedLine
+                                .replace(answerStartRegex, "")
+                                .trim();
+
+                            currentAnswer = {
+                                text: cleanText(answerText),
+                                correct: isCorrect,
+                                originalLine: trimmedLine,
+                            };
+                        } else if (
+                            currentAnswer !== null &&
+                            !trimmedLine.startsWith("::")
+                        ) {
+                            // To jest kontynuacja poprzedniej odpowiedzi (wieloliniowa)
+                            // Zachowaj przejście do nowej linii
+                            currentAnswer.text += "\n" + cleanText(trimmedLine);
+                            currentAnswer.originalLine += "\n" + trimmedLine;
+                        } else if (
+                            trimmedLine.length > 3 &&
+                            !trimmedLine.startsWith("::")
+                        ) {
+                            // Linia przed pierwszą odpowiedzią lub po komentarzu
+                            skippedLines.push({ lineIdx, line: trimmedLine });
+                        }
+                    });
+
+                    // Dodaj ostatnią odpowiedź (po usunięciu trailing whitespace)
+                    if (currentAnswer !== null) {
+                        currentAnswer.text = currentAnswer.text.replace(
+                            /\s+$/,
+                            "",
+                        );
+                        answers.push(currentAnswer);
+                    }
+
+                    if (answers.length === 0) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} POMINIĘTY - nie znaleziono żadnych odpowiedzi`,
+                        );
+                        console.warn(`   Treść pytania: "${previewText}"`);
+                        console.warn(
+                            `   Blok odpowiedzi:`,
+                            answersBlock.substring(0, 200),
+                        );
+                        return;
+                    }
+
+                    const correctAnswers = answers.filter((a) => a.correct);
+                    if (correctAnswers.length === 0) {
+                        console.warn(
+                            `⚠️ Blok #${blockNum} - BRAK POPRAWNYCH ODPOWIEDZI (brak >> lub >>> przed odpowiedzią)`,
+                        );
+                        console.warn(`   Treść: "${previewText}"`);
+                        console.warn(
+                            `   Znalezione odpowiedzi:`,
+                            answers.map((a) => a.originalLine.substring(0, 50)),
+                        );
+                    }
+
+                    if (skippedLines.length > 0) {
+                        console.info(
+                            `ℹ️ Blok #${blockNum} - pominięte linie (komentarze?):`,
+                            skippedLines,
+                        );
+                    }
+
+                    // Shuffle answers
+                    const shuffledAnswers = shuffleArray(answers);
+                    // Assign new letters A, B, C...
+                    shuffledAnswers.forEach((ans, i) => {
+                        ans.id = String.fromCharCode(65 + i); // A, B, C, D...
+                    });
+
+                    questions.push({
+                        text: cleanText(qTextClean), // Zachowuje przejścia do nowej linii
+                        answers: shuffledAnswers,
+                        type:
+                            shuffledAnswers.filter((a) => a.correct).length > 1
+                                ? "multi"
+                                : "single",
+                        explanation: explanation,
+                        blockNumber: blockNum,
+                    });
+
+                    console.log(
+                        `✅ Blok #${blockNum} OK - ${answers.length} odp., ${correctAnswers.length} poprawnych, typ: ${questions[questions.length - 1].type}`,
+                    );
+                });
+
+                console.log(`\n📊 PODSUMOWANIE PARSOWANIA:`);
+                console.log(`   Bloków [Q]: ${blocks.length}`);
+                console.log(`   Sparsowanych pytań: ${questions.length}`);
+                console.log(
+                    `   Pominiętych: ${blocks.length - questions.length}`,
+                );
+
+                // POPRAWIONE: Usuwanie duplikatów na podstawie tytułu ORAZ odpowiedzi
+                // Jeśli chociaż jedna odpowiedź się różni - pytanie jest unikalne
+                const uniqueQuestions = [];
+                const seenSignatures = new Set();
+                const duplicates = [];
+
+                questions.forEach((q) => {
+                    // Twórz sygnaturę z tytułu + posortowanych odpowiedzi
+                    const titlePart = q.text
+                        .toLowerCase()
+                        .replace(/\s+/g, " ")
+                        .trim();
+                    const answersPart = q.answers
+                        .map((a) =>
+                            a.text.toLowerCase().replace(/\s+/g, " ").trim(),
+                        )
+                        .sort()
+                        .join("|");
+                    const signature = titlePart + "|||" + answersPart;
+
+                    if (!seenSignatures.has(signature)) {
+                        seenSignatures.add(signature);
+                        uniqueQuestions.push(q);
+                    } else {
+                        duplicates.push({
+                            blockNumber: q.blockNumber,
+                            text: q.text.substring(0, 60),
+                        });
+                    }
+                });
+
+                if (duplicates.length > 0) {
+                    console.log(
+                        `\n🔄 DUPLIKATY (usunięte - identyczny tytuł I odpowiedzi):`,
+                    );
+                    duplicates.forEach((d) =>
+                        console.log(
+                            `   Blok #${d.blockNumber}: "${d.text}..."`,
+                        ),
+                    );
+                }
+
+                console.log(
+                    `\n✨ FINALNA LICZBA PYTAŃ: ${uniqueQuestions.length}`,
+                );
+                console.groupEnd();
+
+                // Shuffle questions order
+                return shuffleArray(uniqueQuestions);
+            }
+
+            // Funkcja pomocnicza do konwersji tekstu z \n na <br> dla HTML
+            function textToHtml(text) {
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\n/g, "<br>");
+            }
+
+            let allQuestions = [];
+            let totalScore = 0;
+            let answeredCount = 0;
+
+            function renderQuiz() {
+                allQuestions = parseData(rawData);
+                const container = document.getElementById("quiz-container");
+                container.innerHTML = "";
+
+                document.getElementById("progress").innerText =
+                    `Pytania: 0 / ${allQuestions.length}`;
+
+                allQuestions.forEach((q, index) => {
+                    const card = document.createElement("div");
+                    card.className = "question-card";
+                    card.id = `q-card-${index}`;
+
+                    const inputType = q.type === "multi" ? "checkbox" : "radio";
+                    const typeLabel =
+                        q.type === "multi" ? "(Wielokrotny wybór)" : "";
+
+                    let answersHtml = "";
+                    q.answers.forEach((ans, aIndex) => {
+                        // Zachowuje przejścia do nowej linii w odpowiedziach
+                        answersHtml += `
+                <label class="option-btn" id="lbl-${index}-${aIndex}">
+                    <input type="${inputType}" name="q${index}" value="${aIndex}">
+                    <span><b>${ans.id})</b> ${textToHtml(ans.text)}</span>
+                </label>
+            `;
+                    });
+
+                    // Zmieniono: dodano przycisk "Sprawdź" widoczny od razu
+                    // Dodano przycisk wyjaśnienia jeśli istnieje
+                    let explanationHtml = "";
+                    if (q.explanation) {
+                        explanationHtml = `
+                <div class="explanation-container" id="expl-container-${index}" style="display: none;">
+                    <button class="show-explanation-btn" onclick="toggleExplanation(${index})">💡 Pokaż wyjaśnienie</button>
+                    <div class="explanation-text hidden" id="expl-text-${index}">${q.explanation}</div>
+                </div>
+            `;
+                    }
+
+                    card.innerHTML = `
+            <div class="q-header">
+                <span>Pytanie ${index + 1}</span>
+                <span>${typeLabel}</span>
+            </div>
+            <div class="q-text">${textToHtml(q.text)}</div>
+            <div class="options-grid">
+                ${answersHtml}
+            </div>
+            <div class="actions">
+                <button class="check-btn" id="btn-check-${index}" onclick="checkAnswer(${index})">Sprawdź</button>
+            </div>
+            ${explanationHtml}
+        `;
+                    container.appendChild(card);
+                });
+            }
+
+            function checkAnswer(qIndex) {
+                const q = allQuestions[qIndex];
+                const card = document.getElementById(`q-card-${qIndex}`);
+                const inputs = document.querySelectorAll(
+                    `input[name="q${qIndex}"]`,
+                );
+                const btn = document.getElementById(`btn-check-${qIndex}`);
+
+                let allCorrect = true;
+                let anySelected = false;
+
+                // Najpierw sprawdzamy czy cokolwiek zaznaczono
+                inputs.forEach((input) => {
+                    if (input.checked) anySelected = true;
+                });
+
+                if (!anySelected) return; // Jeśli nic nie zaznaczono, nie sprawdzaj
+
+                inputs.forEach((input) => {
+                    const ansIndex = parseInt(input.value);
+                    const label = document.getElementById(
+                        `lbl-${qIndex}-${ansIndex}`,
+                    );
+                    const isCorrect = q.answers[ansIndex].correct;
+
+                    // Reset styles
+                    label.classList.remove(
+                        "is-correct",
+                        "is-wrong",
+                        "should-be",
+                    );
+
+                    if (input.checked) {
+                        if (isCorrect) {
+                            label.classList.add("is-correct");
+                        } else {
+                            label.classList.add("is-wrong");
+                            allCorrect = false;
+                        }
+                    }
+
+                    // Blokujemy zmianę odpowiedzi po sprawdzeniu
+                    input.disabled = true;
+                    label.classList.add("disabled");
+                });
+
+                // Show missing correct answers
+                inputs.forEach((input) => {
+                    const ansIndex = parseInt(input.value);
+                    const label = document.getElementById(
+                        `lbl-${qIndex}-${ansIndex}`,
+                    );
+                    const isCorrect = q.answers[ansIndex].correct;
+
+                    if (isCorrect && !input.checked) {
+                        label.classList.add("should-be");
+                        allCorrect = false;
+                    }
+                });
+
+                if (allCorrect) {
+                    card.classList.add("correct");
+                    card.classList.remove("wrong");
+                } else {
+                    card.classList.add("wrong");
+                    card.classList.remove("correct");
+                }
+
+                // Ukrywamy przycisk po sprawdzeniu
+                btn.style.display = "none";
+
+                // Pokazujemy kontener z wyjaśnieniem (jeśli istnieje)
+                const explContainer = document.getElementById(
+                    `expl-container-${qIndex}`,
+                );
+                if (explContainer) {
+                    explContainer.style.display = "block";
+                }
+
+                updateScore();
+            }
+
+            function toggleExplanation(qIndex) {
+                const explText = document.getElementById(`expl-text-${qIndex}`);
+                const btn = document.querySelector(
+                    `#expl-container-${qIndex} .show-explanation-btn`,
+                );
+
+                if (explText.classList.contains("hidden")) {
+                    explText.classList.remove("hidden");
+                    btn.textContent = "🔽 Ukryj wyjaśnienie";
+                } else {
+                    explText.classList.add("hidden");
+                    btn.textContent = "💡 Pokaż wyjaśnienie";
+                }
+            }
+
+            function updateScore() {
+                const cards = document.querySelectorAll(".question-card");
+                let correctCount = 0;
+                let attempted = 0;
+
+                cards.forEach((card) => {
+                    if (card.classList.contains("correct")) correctCount++;
+                    if (
+                        card.classList.contains("correct") ||
+                        card.classList.contains("wrong")
+                    )
+                        attempted++;
+                });
+
+                const percent =
+                    attempted === 0
+                        ? 0
+                        : Math.round((correctCount / attempted) * 100);
+                document.getElementById("score").innerText = percent;
+                document.getElementById("progress").innerText =
+                    `Odpowiedziano: ${attempted} / ${allQuestions.length}`;
+            }
+
+            function resetQuiz() {
+                renderQuiz();
+                document.getElementById("score").innerText = "0";
+                window.scrollTo(0, 0);
+            }
+
+            // Start
+            renderQuiz(); 
+        </script>
+    </body>
+</html>

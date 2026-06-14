@@ -1416,6 +1416,204 @@
             gwarantuje obsługę mechanizmu fragmentacji ramek 
             nie jest używany w sieciach korzystających z protokołu IEEE802.11 
 
+            [#1] Kismet skanując sieci: 
+            >>> wykorzystuje tylko pasywną analizę sieci. 
+            działa jako aktywny sniffer. 
+            >>> wykorzystuje sekwencję przeskoków pomiędzy odległymi kanałami zwiększającą efektywność analizy. 
+            wykorzystuje sekwencję skanującą kanał po kanale, zwiększającą w ten sposób efektywność analizy. 
+            jest w stanie wykryć tylko te rozsyłające ramki BEACON. 
+            >>> potrafi w locie dekodować pakiety WEP. 
+            pracuje z każdą kartą bezprzewodową obsługującą standardy 802.11. 
+            >>> może rozpoznać dostawców wykrytych kart bezprzewodowych.
+            
+            [#1] Program Kismet: 
+            za pomocą wbudowanego IDS potrafi rozpoznać zagrożenia tylko na podstawie sygnatur. 
+            >>> może rozpoznać zagrożenia w sieci na podstawie analizy ruchu w warstwie 2. 
+            >>> jest zbudowany w oparciu o architekturę client-server 
+            zapisuje pobrane pakiety w formatach popularnych baz danych(MySQL, PostgreSQL,Oracle, MS SQL) 
+            >>> Mając do dyspozycji moduł GPS generuje mapy rozmieszczenia wykrytych sieci. 
+            Mierzy moc odbieranych sygnałów sieci w mW 
+            Dostępny jest do nieodpłatnego użytku tylko do celów niekomercyjnych. 
+
+            [#1] Sieć WLAN działająca na 5GHz: 
+            >>> a) może wykorzystywać MIMO
+            >>> b) 802.11n 
+            c) 802.11b 
+            >>> d) 802.11a 
+            e) moze wykorzystywac kanał 11 
+            f) może wykorzystywać technologię DSSS (direct sequence spread spectrum)
+            >>> g) pracować w oparciu o standard 802.11ac
+
+            [#1] Ramka Beacon: 
+            >>> a) może zawierać pole SSID o zerowej długości 
+            >>> b) zawsze zawiera BSSID 
+            >>> c) jest transmitowana cyklicznie przez każdy punkt dostępowy 
+            d) nie jest transmitowana cyklicznie gdy dana sieć jest ukrytą 
+            >>> e) w polu adresu docelowego ma adres rozgłoszeniowy (broadcast) 
+            f) nie jest przeznaczona do informowania stacji o konfiguracji sieci 
+            g) dzięki szyfrowaniu pozwala ukryć SSID sieci 
+
+            [#1] Parametr okna współzawodnictwa ma największy wpływ na uzyskanie największej możliwej sieci WLAN badanej w symulatorze COMNET złożonej ze 100 stacji pracującej w ... okna zdefiniowanych w IEEE 802.11 
+            >>> a) zarówno CWmin jak CWmax powinno być duże 
+            b) wyłącznie CWmin, które powinno być małe 
+            c) zarówno CWmin jak i CWmax, przy czym CWmin powinno być małe, a CWMAX duże 
+            d) wyłącznie CWmax, które powinno być duże
+            e) wyłącznie CWmax, które powinno być małe
+
+            [#1] Dwie sieci WLAN (A i B) pracujące na tym samym obszarze: 
+            a) nie mogą być skonfigurowane do pracy w standardzie 802.11n w dwóch różnych pasmach 2,4 i 5 GHz 
+            b) mogą wpływać na siebie jeśli sieć A pracuje w standardzie 802.11b/g, a sieć B w standardzie 802.11a 
+            c) nie mogą wpływać na siebie jeśli sieć A pracuje w standardzie 802.11a, a sieć B w standardzie 802.11ac 
+            >>> d) nie mogą wpływać na siebie jeśli sieć A pracuje w standardzie 802.11b/g, a sieć B w standardzie 802.11ac
+            >>> e) wpływają na siebie jeśli sieć A pracuje na kanale 40 (20 MHz) a sieć B na kanale 36 (40 MHz)
+            >>> f) wpływają na siebie gdy pracują na sąsiednich kanałach w paśmie 2.4 GHz 
+            >>> g) nie wpływają na siebie jeśli sieć A pracuje w paśmie 5 GHz a sieć B w paśmie 2.4 GHz
+
+            [#1] Odzyskanie hasła zaszyfrowanego z użyciem algorytmu Wired Equivalent Privacy (WEP) 
+            a) przy użyciu metody pasywnej jest niezależne od generowanego w sieci ruchu 
+            b) polega na przechwycaniu i porównaniu pakietów z identycznymi IV 
+            >>> c) wymaga przechwycenia odpowiednio dużej ilości pakietów z unikalnymi IV 
+            >>> d) jest możliwe przy użyciu metody wstrzykiwania pakietów Address Resolution Protocol (ARP) do AP 
+
+            [#1] WPA-Enterprise: 
+            >>> a) może korzystać z protokołu EAP-MD5 
+            b) jest podatne na ataki słownikowe, ponieważ wykorzystuje prekonfigurowany klucz zabezpieczeń 
+            >>> c) wykorzystuje serwer RADIUS w celu uwierzytelnienia stacji dołączającej do sieci WLAN 
+            d) może korzystać z szyfrowania WEP 
+            e) autoryzuje użytkownika w oparciu o adres MAC 
+            >>> f) może korzystać z szyfrowania TKIP
+            g) to inaczej WPA-PSK
+            h) autoryzuje użytkownika w oparciu o adres MAC
+            >>> i) może korzystać z szyfrowania AES
+            >>> j) generuje automatycznie klucz sieci dla użytkownika dołączającego się do sieci
+
+            [#1] Nagłówek MAC ramki danych standardu IEEE 802.11 
+            a) jest bezpośrednio poprzedzony preambułą
+            b) może zawierać 4 pola adresowe 
+            c) zawiera informacje, czy ramka jest retransmitowana 
+            d) zawiera numer sekwencyjny ramki 
+
+            [#1] Jaka powinna być optymalna wielkość parametru CWmin (dająca największą przepustowość) dla sieci WLAN badanej w symulatorze comnet złożonej ze 100 stacji przesyłających ramki o długości 2000B przy CWmax=8191 szczelin, pracującej w warunkach nasycenia? 
+            a) CWmin=52 
+            b) CWmin=127 
+            >>> c) CWmin=63​ ​(gdy jest 5 stacji) 
+            d) CWmin=31 
+            >>> e) CWmin=1023 
+
+            [#1] Ustawienie parametru RTS threshold w punkcie dostępowym na wartość 100B oznacza 
+            >>> a) rozwiązanie problemu stacji ukrytych dla trzech stacji, z których dwie skrajne się nie słyszą podczas wymiany ramek o długości 200bajtów
+            >>> b) włączenie mechanizmu wirtualnego śledzenia nośnej dla ramek o długości 1500 bajtów 
+            c) stosowanie wstępnej rezerwacji kanału radiowego dla wszystkich ramek mniejszych niż 100B
+            >>> d) zmniejszenie wydajności pracy sieci dla obszaru, na którym aktywnie pracuje wyłącznie jedna stacja kliencka nadająca ramki do AP 
+
+            [#1] W jaki sposób można zwiększyć bezpieczeństwo transmisji z użyciem punktu dostępowego Bluetooth 
+            a) stosując algorytm RC4 dla zaszyfrowania przesyłanych danych 
+            b) tworząc tzw. klucz połączenia z użyciem protokołu RC5 
+            c) uruchamiając w punkcie dostępowym serwer RADIUS 
+            >>> d) stosując Bluetooth Passkey dla zapewnienia kontroli dostępu 
+
+            [#1] Aby zastosować metodę Packet Injection do łamania klucza WEP 
+            a) na punkcie dostępowym nie może być ustawiona opcja MAC Filter List ​
+            >>> b) MOŻNA wykorzystać adres MAC klienta zasocjowanego z punktem dostępowym 
+            >>> c) należy wydać na komputerze na którym przeprowadzana jest operacja łamania klucza polecenie aireplay-ng 
+            d) trzeba wykorzystać MAC klienta zasocjowanego z punktem dostępowym 
+
+            [#1] Parametr “Fragmentation Threshold” z wyłączonym mechanizmem RTS/CTS w przypadku niewielkiej sieci ad-hoc standardu IEEE 802.11 działającej w stanie nasycenia 
+            >>> a) powoduje podział ramek większych niż wartość parametru na mniejsze fragmenty transmitowane osobno 
+            b) po ustawieniu na małą wartość poprawia wydajność transmisji gdy przesyłane są bardzo krótkie ramki i występują zakłócenia powodujące retransmisje 
+            >>> c) ma nieznaczny wpływ na wydajność transmisji jeśli transmitowane są bardzo krótkie ramki 
+            >>> d) po ustawieniu na małą wartość może poprawić wydajność transmisji gdy przesyłane są długie ramki i występują zakłócenia powodujące retransmisje
+            e) powoduje stosowanie wstępnej rezerwacji kanału radiowego dla wszystkich ramek większych ...
+
+            [#1] Kismet skanując sieci: 
+            >>> Wykorzystuje tylko pasywną analizę sieci. 
+            działa jako aktywny sniffer. 
+            >>> Wykorzystuje sekwencję przeskoków pomiędzy odległymi kanałami zwiększającą efektywność analizy. 
+            wykorzystuje sekwencję skanującą kanał po kanale, zwiększającą w ten sposób efektywność analizy. 
+            jest w stanie wykryć tylko te rozsyłające ramki BEACON. 
+            >>> potrafi w locie dekodować pakiety WEP. 
+            pracuje z każdą kartą bezprzewodową obsługującą standardy 802.11. 
+            >>> może rozpoznać dostawców wykrytych kart bezprzewodowych. 
+
+            [#1] Program Kismet 
+            za pomocą wbudowanego IDS potrafi rozpoznać zagrożenia tylko na podstawie sygnatur. 
+            >>> Może rozpoznać zagrożenia w sieci na podstawie analizy ruchu w warstwie 2. 
+            >>> Jest zbudowany w oparciu o architekturę client-server 
+            zapisuje pobrane pakiety w formatach popularnych baz danych(MySQL, PostgreSQL,Oracle, MS SQL) 
+            >>> Mając do dyspozycji moduł GPS generuje mapy rozmieszczenia wykrytych sieci. 
+            Mierzy moc odbieranych sygnałów sieci w mW 
+            Dostępny jest do nieodpłatnego użytku tylko do celów niekomercyjnych. 
+
+            [#1] Prawdziwymi stwierdzeniami o 802.11 i jego strukturze pakietu są: 
+            nagłówek MAC może zawierać w sobie do pięciu adresów 
+            >>> Do nagłówka MAC należy sekwencja kontrolna 
+            >>> Do nagłówka MAC należy FCS zawierające 32-bitowe CRC​ ​
+            >>> Struktura pakietu zawiera preambułę i nagłówek PLCP w warstwie fizycznej. 
+            Nagłówek MAC znajduje się w warstwie fizycznej struktury pakietu. 
+            >>> część transmisji PLCP jest zawsze wysyłana najniższą powszechnie używaną wartością data rate)  
+            Typ w polu frame control może być jedną z czterech wartości.​ 
+
+            [#1] Oprogramowanie Wireshark pozwala na: 
+            >>> przechwytywanie pakietów z interfejsu sieciowego w czasie rzeczywistym 
+            >>> zapisywanie przechwyconego ruchu do pliku .pcap 
+            >>> filtrowanie przechwytywanego ruchu z wykorzystaniem odpowiednich reguł filtrujących 
+            >>> kolorowanie pakietów ze względu na ich typ 
+            przechwytywanie wyłącznie niektórych rodzajów pakietów 
+            wykorzystywanie tylko wbudowanych reguł filtrujących 
+            nie zezwala na filtrowanie pakietów danych przechwytywanych 
+            nie zezwala na podglądanie nagłówków protokołów przechwyconych pakietów danych 
+
+            [#1] Nagłówek MAC 802.11 zawiera: 
+            >>> kontrola ramki (Frame Control) 
+            >>> Adres źródłowy (Source address) 
+            >>> Adres docelowy (Destination address) 
+            >>> Kontrola sekwencji (Sequence Control) 
+            Cykliczna kontrola nadmiarowa ramki (Cyclic Redundancy Check) 
+            >>> Typ ramki (Type of frame) 
+            Znacznik początkowy ramki (Start frame delimiter filed) 
+            Preambuła (preamble filed) 
+
+            [#1] Które informacje dotyczące WEP są prawdziwe: 
+            Wykorzystuje algorytm RC5 
+            >>> ​Można ustawić maksymalnie 4 klucze na punkcie dostępowym 
+            Jest skrótem Wireless Encryption Protocol ​//Wired Equivalent Privacy 
+            >>> Niektóre karty sieciowe umożliwiają ustawienie tylko 1 klucza 
+            >>> Wykorzystuje CRC-32 
+            >>> Klucze ustawione na AP i urządzeniu klienckim muszą się zgadzać 
+            Trzeba ustawić minimalnie 4 klucze na AP 
+            >>> Wykorzystuje RC4 
+
+            [#1] Aby zastosować packet-injection do łamania klucza WEP: 
+            Trzeba wykorzystać adres MAC klienta zasocjowanego z punktem dostępowym 
+            Wystarczy polecenie aircrack-ng 
+            >>> Można wykorzystać fake-authentication 
+            >>> Najczęściej wykorzystuje się przechwycone pakiety ARP 
+            >>> Można wykorzystać adres MAC klienta zasocjowanego z punktem dostępowym
+            Na punkcie dostępowym nie może być ustawiona opcja MAC Filter List 
+            >>> Należy wydać na komputerze, na którym przeprowadzana jest operacja łamania klucza polecenie aireplay-ng 
+            >>> Należy przestawić interfejs sieciowy w tryb pracy RFMON (monitor)
+
+            [#1] Podczas łamania klucza WEP wykorzystywane są narzędzia: 
+            >>> airodump-ng: przechwytuje pakiety i zapisuje je do pliku 
+            >>> aireplay-ng: zalewa AP pakietami ARP request 
+            >>> aircrack-ng: generuje klucz WEP na podstawie pakietów zgromadzonych w pliku 
+            airodump-ng: zapisuje informacje ​o sieci​ do pliku 
+            airogain-ng: przechwytuje i zapisuje pakiety do pliku 
+            aircrack-ng: generuje klucz WEP na podstawie podsłuchanych informacji o sieci (między innymi adresu MAC AP) 
+            aireplay-ng: odpowiada na zapytania AP podszywając się za klienta 
+            airhack-ng: wywołuje procedurę łamania klucza na podstawie pakietów zapisanych w pliku 
+
+            [#1] Klucz SSID: 
+            >>> identyfikuje bezprzewodowe sieci lokalne 
+            >>> jest wysyłany tekstem jawnym 
+            chroni sieć lokalną przed próbą nieautoryzowanego dostępu 
+            wykorzystywany jest do autoryzacji użytkowników 
+            >>> ma długość 32 bitów 
+            >>> dzięki wbudowanym opcjom pozwala ograniczyć liczbę użytkowników sieci 
+            musi być rozgłaszany przez każdą sieć lokalną 
+            >>> dodawany jest do nagłówków pakietów IP 
+
+
                         
 
 

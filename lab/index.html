@@ -1613,6 +1613,181 @@
             musi być rozgłaszany przez każdą sieć lokalną 
             >>> dodawany jest do nagłówków pakietów IP 
 
+            [#1] Protokół RADIUS: 
+            >>> dostarcza możliwość autoryzacji użytkowników sieci lokalnych 
+            >>> jest protokołem typu klient/serwer 
+            >>> do szyfrowania wykorzystuje funkcję skrótu MD5 
+            >>> okresowo autoryzuje użytkowników dołączonych do sieci 
+            >>> nie pozwala na korzystanie z funkcjonalności proxy 
+            wykorzystywany jest jedynie w bezprzewodowych sieciach lokalnych 
+            wykorzystuje protokół TCP 
+            szyfruje nadawane komunikaty 
+
+            [#1] Sieć typu ad-hoc: 
+            jest dużo bardziej odporna na wystąpienie kolizji pakietów w porównaniu z siecią wykorzystującą punkt dostępowy. 
+            wymaga rozbudowanej infrastruktury. 
+            może zostać zestawiona pomiędzy urządzeniami należącymi do różnych podsieci. 
+            >>> może wykorzystywać wiele kanałów. 
+            >>> do poprawnego działania nie potrzebuje użycia punktu dostępowego. 
+            >>> umożliwia transmisję szybszą niż sieć DLAN. 
+            zawsze zapewnia bezpośrednie połączenie pomiędzy dowolnymi urządzeniami w sieci WLAN
+            wymaga, żeby przynajmniej jedno z podłączonych urządzeń działało jako serwer DHCP. 
+            >>> to sieć o zdecentralizowanej topologii
+            >>> to sieć bez infrastruktury sieciowej
+            jest bardziej odporna na wystąpienia kolizji ramek w porównaniu z siecią złożoną z takiej samej liczby stacji, wykorzystującej dodatkowo punkt dostępowy
+            >>> może korzystać z kanału o szerokości 80 MHz jeśli pracuje w standardzie 802.11ac
+
+
+            [#1] Na których z poniższych częstotliwości może pracować Bluetooth: 
+            Wszystkie odpowiedzi są prawidłowe 
+            Żadna z odpowiedzi nie jest prawidłowa 
+            >>> 2,4 GHz 
+            5 GHz 
+            900 MHz 
+            3,6 GHz 
+            10 GHz 
+            13 GHz
+
+            [#1] W technologii Bluetooth: 
+            >>> urządzenia są zorganizowane w grupy liczące od dwóch do ośmiu składników zwanych pikonetami (piconets) 
+            określono rozszerzenie widma przez pseudolosowe skakanie po 109 częstotliwościach w paśmie 1,4 - 4,4 GHz 
+            >>> definiujemy trzy klasy mocy nadawanej o zasięgu 100, 10 oraz 1 metr 
+            są zdefiniowane między innymi profile STP ( Service Transfer Protocol ) oraz HPP ( Headset Port Profile ) 
+            >>> Sterownik HCI jest używany w komputerze do sprzęgania aplikacji Bluetooth z protokołem transportowym 
+            Komunikacja funkcjonuje w licencjonowanym paśmie IMS 
+            >>> L2CAP zapewnia sprzęganie z kontrolerem łącza i kompatybilność między urządzeniami 
+            Sieci pikonet mogą być formowane tylko statycznie 
+
+            [#1] Wykrywanie urządzeń Bluetooth, 
+            T: Może zostać przeprowadzone za pomocą programu BTScanner 
+            F: Polega na ustaleniu identyfikatora HCI ( Hide Connection Identifier ) stacji szukanej 
+            T: W systemie Linux może zostać przeprowadzone z poziomu linii komend, przykładowo poleceniem hcitool scan 
+            F: Jest możliwe w trybie Dial-up 
+            F: Jest możliwe za pomocą komendy hcidump 
+            F: Jest możliwe tylko w profilach PAN, SPP oraz HSP 
+            T: Jest możliwe za pomocą komendy hcitool dev 
+            F: opiera się o mechanizmy detekcji z warstwy L2CAP 
+
+            [#1] Interferencje pomiędzy sygnałami WiFi i Bluetooth: 
+            Nie mogą wystąpić, ponieważ obie sieci pracują na innych pasmach częstotliwościowych 
+            >>> Mogą wystąpić, ponieważ obie sieci mogą pracować w paśmie 2.4GHz 
+            Nie mają wpływu na pracę obu sieci 
+            >>> Mogą mieć wpływ na prędkość transmisji danych w obu sieciach 
+            >>> Mogą zostać wyeliminowane, poprzez migrację sieci WiFi do pasma 5GHz 
+            Mogą zostać zmniejszone, przy uzyciu adaptacyjnego skakania po częstotliwościach (ADH - Addaptive Frequency Hopping), techniki używanej w standardzie WiFi 
+            >>> Mogą zostać zmniejszone, przy uzyciu adaptacyjnego skakania po częstotliwościach (ADH - Addaptive Frequency Hopping), techniki używanej w standardzie Bluetooth 
+            Mogą zostać wyeliminowane dzięki użyciu standardu Bluetooth 4.0 i nowszych 
+
+
+            [#1] Które z poniższych czynności w konfiguracji Access Point'a są niezbędne do poprawnego jego działania w trybie Repeater? 
+            >>> Ustawienie AP w tryb pracy "Repeater" . 
+            Ustawienie pola "Remote AP MAC" na adres fizyczny interfejsu WLAN Access Pointa z którym skojarzony jest Repeater. 
+            >>> Ustawienie pola "Remote AP MAC" na adres fizyczny interfejsu Ethernet Access Pointa z którym skojarzony jest nasz Repeater. 
+            Ustawienie Access Pointa do pracy na kanale nr 12. 
+            >>> Ustawienie poprawnego adresu IP, maski podsieci oraz SSId) ​
+            Ustawienie trybu szyfrowania na WEP. 
+            Ustawienie mocy nadawanego sygnału na najniższą możliwą. 
+            >>> Ustawienie Access Pointa do pracy na dowolnym kanale) 
+
+            [#1] Access Point działający w trybie pracy "Repeater" : 
+            Zmienia logiczną strukturę ramki którą otrzymuje a następnie przesyła) 
+            >>> Pracuje w warstwie pierwszej modelu OSI/ISO. 
+            Pracuje w warstwie drugiej modelu OSI/ ISO. 
+            >>> Zwiększa zasięg sieci WIFI z którą jest połączony. 
+            Może pracować tylko i wyłącznie w paśmie częstotliwości 2,4GHz 
+            >>> Umożliwia ustawienie mocy transmisji nadawanego sygnału. 
+            >>> Może powodować dodatkowe opóźnienia w transmisji. 
+            W sieciach WLAN może być używany na długich dystansach
+
+            [#1] Jakie są wady używania trybu Repeater? 
+            >>> Tryb Repeater redukuje przepustowość sieci o minimum 50% 
+            Użycie trybu Repeater powoduje duże zużycie mocy Access Point'a 
+            >>> Zwiększona jest podatność na interferencje w sieci lokalnej ​//np. przez mikrofalówki 
+            Do poprawnej pracy trzeba użyć urządzeń tego samego producenta 
+            >>> Repeater musi mieć stałe źródło zasilania 
+            Repeater wymaga użycia szyfrowania WEP 
+            >>> Repeater posiada ograniczony zasięg 
+            Tryb repeater wymaga zastosowania uwierzytelnienia 
+
+            [#1]  Jakie są cechy wspólne trybów pracy Repeater i Bridge w urządzeniu Access Point? 
+            >>> Zarówno w trybie Repeater jak i w trybie Bridge należy podać adres MAC urządzenia dostarczającego sygnał 
+            Zarówno w trybie Repeater jak i w trybie Bridge można tworzyć połączenia pomiędzy dwoma sieciami 
+            >>> Zarówno Repeater jak i Bridge można wykorzystać do zwiększenia zasięgu sieci 
+            Tryb Repeater i tryb Bridge nie modyfikuje przesyłanych ramek 
+            >>> Tryb Repeater oraz tryb Bridge pozwalają na wykorzystanie szyfrowania WEP 
+            Tryb Repeater oraz tryb Bridge pracują w trzeciej warstwie modelu OSI/ISO 
+            >>> Zarówno w trybie Repeater jak i w trybie Bridge jest możliwość wybrania kanału, na którym prowadzi się transmisję 
+            Zarówno w trybie Repeater jak i w trybie Bridge nie można wybrać kanału, na którym ma być prowadzona transmisja 
+
+            [#1] Parametr RTS threshold dla access pointa oznacza:​  
+            >>> Opóźnienie wysłania wiadomości Request to Send przez AP 
+            Czas, który musi odczekać komputer klienta przed wysłaniem danych do AP 
+            >>> Czas, który musi odczekać AP przed wysłaniem wiadomości RTS do komputera klienckiego 
+            Czas, który musi odczekać AP przed wysłaniem danych do komputera klienckiego 
+            Opóźnienie wysłania wiadomości Request to Send przez komputer klienta 
+            Czas, który musi odczekać komputer klienta przed wysłaniem wiadomości RTS do access pointa 
+            Opóźnienie wysłania wiadomości Response to Server przez komputer klienta 
+            Opóźnienie wysłania wiadomości Response to Server przez access point 
+
+            [#1] W sieciach Wireless LAN: 
+            >>> Liczba stacji roboczych nie ma znaczącego wpływu na przepustowość sieci​ 
+            Przepustowość sieci jest większa dla wiadomości długości 128B niż dla 1024B 
+            >>> Przepustowość jest mniejsza dla wiadomości długości 128B niż dla 1024B 
+            Parametr Beacon Interval zwiększa średnie opóźnienie transmisji 
+            Parametr Fragmentation threshold nie wpływa na przepustowość 
+            Parametr Beacon Interval zmniejsza średnie opóźnienie transmisji 
+            >>> Parametr Fragmentation threshold określa minimalny rozmiar wiadomości, która zostanie podzielona 
+            Parametr Beacon Interval nie może być ustawiony na więcej niż 1ms 
+
+
+            [#1] Jakie informacje musimy uzyskać z programu Kismet przy łamaniu zabezpieczeń WPA?: 
+            >>> Nazwa atakowanej sieci (SSID) 
+            >>> Adres MAC punktu dostępowego 
+            >>> Adres BSSID 
+            Adres IP routea 
+            Adresy IP wszystkich klientów sieci 
+            >>> Adresy MAC klientów sieci 
+            >>> Numer kanału 
+            Metodę zabezpieczenia sieci 
+
+            [#1] W celu złamania zabezpieczeń WPA? 
+            >>> Należy przechwycić pakiety 4-way handshake wykorzystując polecenie airodump 
+            Należy przechwycić pakiety 4-way handshake przy pomocy polecenia aircrack 
+            >>> Można wykorzystać wcześniej zdefiniowany słownik wyrazów 
+            >>> Można wykorzystać generator słów do przeprowadzenia ataku typu Brute Force 
+            Należy przechwycić pakiety 3-way handshake przy pomocy polecenia airodump 
+            Nie można wykorzystywać własnoręcznie napisanych słowników wyrazów 
+            >>> Należy wymusić ponowne uwierzytelnianie klienta sieci, aby uzyskać 4-way handshake 
+            Należy wymusić ponowne uwierzytelnianie klienta sieci w celu uzyskania 3-way handshake 
+
+            [#1] Z czego korzysta WPA? 
+            >>> TKIP, EAP oraz MIC 
+            MIC, TKIP, EAP oraz AES
+            Wszystkie wymienione odpowiedzi są poprawne 
+            >>> 802.1x + TKIP 
+            AES oraz MIC 
+            AES oraz TKIP 
+            EAP i AES 
+            MIC, EAP, TKIP i 801.2x 
+
+            [#1] Pole “Association id” w ramkach standardu... 
+            a) ma 2 bajty 
+            b) stanowi identyfikator stacji przydzielony jej przez punkt dostępu 
+            c) stanowi część ramki “Association request” 
+            d) wartość pola AID stanowi liczbę z zakresu 1-2007 
+
+
+            [#1] Łamanie algorytmu WPA2 sieci standardu IEEE 802.11 
+            a) polega na rozłączeniu stacji od AP, a następnie przechwyceniu tzw. 4-Way Handshake i uruchomieniu odpowiedniego narzędzia do łamania klucza WPA2
+            b) jest możliwe także w sieci z ukrytym SSID 
+            c) polega na wykorzystaniu spreparowanej ramki Deauthentication w celu wymuszenia p.. narzędzia do łamania klucza WPA2 z atakiem brute force // to samo co H) lol 
+            d) polega na pasywnym nasłuchiwaniu ramek atakowanej sieci WLAN, gromadzeniu odpowiedniej liczby tzw. 4-Way Handshake 
+            e) polega na aktywnym ataku na sieć WLAN poprzez wstrzykiwanie pakietów do AP, a następnie gromadzeniu odpowiedniej tzw. słabych wektorów IV...
+            f) jest niemożliwe w sieciach stosujących filtrowanie ramek ze względu na adres MAC
+            g) polega na preparowaniu ramek typu Beacon w celu podszycia się pod punkt dostępowy i przyłączenia atakowanej stacji co pozwala poznać klucz WPA2…
+            h) polega na wykorzystaniu spreparowanej ramki Deauthentication w celu wymuszenia ponownego dołączenia stacji do AP, dzięki czemu … a następnie uruchomieniu odpowiedniego narzędzia do łamania klucza WPA2 z użyciem ataku brute force
+            i) polega na pasywnym nasłuchiwaniu ramek atakowanej sieci WLAN, gromadzeniu odpowiedniej liczby tzw. słabych wektorów IV i uruchomieniu odpowiedniego narzędzia do łamania klucza WPA2
+
 
                         
 

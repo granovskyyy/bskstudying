@@ -1258,6 +1258,164 @@
             >>> e) 3 B
             f) 4 B
 
+            [#1] Ramki RTS/CTS: 
+            >>> a) wspieraja dzialanie mechanizmu Wektora Alokacji Sieci NAV (Network Alocation Vector) 
+            >>> b) zawieraja FCS 
+            c) dla przyspieszenia procesu rezerwacji kanału są nadawane z maksymalną dostępną szybkością transmisji​ ​
+            d) są równej długości ​
+            >>> e) należą do grupy ramek kontrolnych
+            f) stanowią rozwinięcie skrótów Ready To Send i Connected To Send
+            g. należą do grupy ramek zarządzających
+
+            [#1] Metoda wstrzykiwania pakietów do AP w celu złamania hasła zaszyfrowanego algorytmem WEP 
+            >>> a) jest możliwa w przypadku uwierzytelniania z użyciem współdzielonego klucza (Shared Key Authentication) 
+            >>> b) wymaga przejścia stacji w tryb Monitor 
+            d) zawsze wymaga zmiany adresu MAC w celu podszycia się pod inną stację 
+            e) wymaga wcześniejszego przyłączenia się do punktu dostępu
+
+            [#1] Parametr RTS Threshold pozwalając uruchomić mechanizm RTS/CTS w sieciach ad-hoc w przypadku dużej liczby stacji działających w stanie nasycenia 
+            a) po ustawieniu na dużą wartość zmniejsza wydajność pracy sieci gdy przesyłane są (Głównie) bardzo krótkie ramki danych​ 
+            b) powoduje podział ramek większych niż wartość parametru na mniejsze fragmenty 
+            transmitowane osobno​ 
+            c) poprzez ustawienie na wartość niższą niż rozmiar transmitowanych ramek danych pozwala zmniejszyć czas zajętości kanału przez transmisję ramek kontrolnych 
+            >>> d) powoduje stosowanie wstępnej rezerwacji kanału radiowego dla wszystkich 
+            ramek większych niż wartość parametru​ 
+
+            [#1] Uruchomienie maskarady IP/NATa na kliencie sieci WLAN umożliwia: 
+            a) planowanie, śledzenie i zarządzanie przestrzenią adresów IP używanych w sieci komputerowej​
+            >>> b) zmianę źródłowych lub docelowych adresów IP, zwykle również numerów portów TCP/UDP pakietów IP podczas ich przepływu przez to urządzenie 
+            c) uzyskanie od serwera danych konfiguracyjnych, np. adresu IP hosta, adresu IP bramy sieciowej, adresu serwera DNS, maski podsieci ​- to jest DHCP 
+            d) zamianę adresów znanych użytkownikom Internetu na adresy zrozumiałe dla urządzeń tworzących sieć komputerową - to jest DNS
+
+            [#1] Narzędzie do badania wydajności pracy sieci iperf: 
+            a) pozwala na pomiar strat pakietów między stacją nadawczą i odbiorczą z użyciem protokołu TCP ​- fałsz, w TCP nie ma strat, będą retransmisje 
+            >>> b) straty pakietów udp 
+            c) pozwala na pomiar opóźnienia pomiędzy stacją nadawczą i odbiorczą​ ​ 
+            d) pracuje w oparciu o konfigurację p2p 
+            >>> e) pracuje w trybie klient serwer 
+            >>> f) pozwala na analizę wydajności pracy sieci WLAN z użyciem protokołów TCP i UDP 
+            >>> g) klient może zestawić kilka sesji połączeń 
+            >>> h) pozwala na pomiar strat pakietów między stacją nadawczą i odbiorczą z użyciem protokołu UDP
+            >>> i) pozwala na pomiar jittera między stacją nadawczą i odbiorczą 
+
+            [#1] Oprogramowanie Kismet 
+            >>> a) PASYWNIE wykrywa sieci WLAN 
+            b) pozwala wysyłać spreparowane ramki Deauthentication 
+            c) aktywnie wykrywa sieci, wysyłając do AP i wymuszając odesłanie info o SSID 
+            >>> d) potrafi wykryć sieci WLAN z ukrytym SSID
+            e) jest snifferem sieciowym standardu IEEE 802.11 warstwy 3
+            >>> f) jest oparte na architekturze klient-serwer
+            g. przestawia kartę WLAN w tryb “managed”
+            h. potrafi dekodować ramki zaszyfrowane z użyciem mechanizmu WPA (Wi-Fi Protected Access) w czasie rzeczywistym
+
+            [#1] Wymień warstwy standardu Bluetooth 
+            >>> a) L2CAP ​na wykładzie z bluetooth na slajdzie 16 jest L2CA, na labach jest L2CAP 
+            b) mac 
+            >>> c) RFCOMM 
+            d) LLC 
+
+            [#1] Pole adresowe SOURCE w nagłówku ramki WLAN 
+            a) nie może zawierać adresu przewodowego interfejsu sieciowego (ethernet)
+            b) informuje o adresie IP nadawcy ramki​ 
+            >>> c) informuje o adresie MAC nadawcy ramki 
+            d) zawsze zawiera informacje o adresie interfejsu bezprzewodowego transmitującego 
+            ramkę ​(to byłby transmiter address) 
+            >>> e) ma zawsze rozmiar 6B 
+            f) może być to adres rozgłoszeniowy 
+            >>> g) może zostać podmieniony​ ​ale tylko w przypadku ataku, w normalnej pracy sieci nie 
+            >>> h) może zawierać BSSID
+            >>> i)może zostać spreparowane w celu podszycia się pod inną stację
+            j) zawsze zawiera adres fizyczny punktu dostępowego
+
+            [#1] Która odmiana protokołu EAP zapewnia najwyższy poziom bezpieczeństwa? 
+            a) EAP-MD5 
+            >>> b) EAP-TLS 
+            c) PEAP 
+            d) LEAP 
+
+            [#1] Oprogramowanie crunch stosowane przy łamaniu WPA2 umożliwia 
+            a) łamanie klucza WPA2 poprzez podstawianie kolejnych haseł metodą brute-force ?? (tak jakby d),e) skłądają się na a) imo )
+            b) przestawienie interfejsu WLAN w tryb monitor 
+            c) łamanie WPA2 poprzez zastosowanie algorytmu wyznaczającego klucz na podstawie statystyk zebranych z zrzutu atakowanej sieci 
+            >>> d) utworzenie dowolnego słownika z określonego zestawu znaków 
+            >>> e) łamanie klucza WPA2 poprzez podstawianie kolejnych haseł słownikowych 
+            f) przechwytywanie ruchu w sieci standardu IEEE 802.11 na poziomie warstwy 2
+
+            [#1] Czym różnią się protokoły EAP-MD5 I PEAP 
+            a) nie ma różnic odnośnie formatu przesyłanych pakietów 
+            b) PEAP ma wyższy poziom bezpieczeństwa dzięki szyfrowaniu WPA2, podczas gdy 
+            EAP-MD5 korzysta z WPA 
+            >>> c) PEAP nie jest podatny na ataki MITM, EAP-MD5 jest podatny 
+            d) PEAP ma wyższy poziom bezpieczeństwa dzięki szyfrowaniu WPA, EAP-MD5 
+            korzysta z WPA2 
+            >>> e) W EAP-MD5 hasło i login przesyłane są z wykorzystaniem funkcji skrótu (hash), a w PEAP za pomocą szyfrowanej transmisji SSL 
+            f) PEAP ma wyższy poziom bezpieczeństwa dzięki szyfrowaniu WPA, podczas gdy EAP-MD5 korzysta z WEP 
+            g) tylko PEAP wykorzystuje serwer RADIUS
+            >>> h) w komunikacji między przełącznikiem a serwerem EAP-MD5 oraz PEAP różnią się jedynie na poziomie warstwy, w której działa protokół RADIUS 
+            
+            [#1] Tryb ad-hoc standardu IEEE 802.11 
+            >>> a) pozwala rozgłaszać SSID sieci​  
+            b) pozwala na stosowanie wyłącznie kanałów o szerokości 20MHz​  
+            >>> c) nie wymaga obecności punktu dostępowego 
+            >>> d) jest inaczej nazywany IBSS
+            >>> e) w standardzie 802.11ac pozwala rozgłaszać kanały 80MHz 
+            f) wymaga zastosowania technologii MIMO
+            g) nie wspiera szyfrowania Wired Equivalent Privacy (WEP)
+            h)  korzysta z trybu monitor karty sieciowej
+
+
+            [#1] Podstawowa szybkość transmisji (basic rate) jest w punkcie dostępowym stosowana do: 
+            >>> a) nadawania ramek multicastowych i rozgłoszeniowych ??
+            >>> b) transmisji ramek sterowania 
+            >>> c) kompatybilności wstecznej 
+            d) jedna z wartości przesyłania danych w 802.11c ?? 
+            >>> e) nadawania ramek zarządzających
+            f) nadawania ramek danych zgodnych ze standardem IEEE 802.11g 
+            >>> g) uzyskania kompatybilności współpracy ze wszystkimi “starszymi” urządzeniami standardu IEEE 802.11 
+
+
+            [#1] Z RADIUS korzystają (być może chodziło o to jakie są inne AAA)
+            a) iperf 
+            >>> b) tacacs 
+            >>> c) ​RADIUS 
+            >>> d) diameter 
+            >>> e) tacacs+ 
+
+            [#1] Port logiczny 802.1X dla sieci 802.11: 
+            >>> a) port wydzielony w AP do komunikacji klienta z serwerem RADIUS 
+            b) ​port do przesyłania komunikatów e-poll request i e-poll response 
+            >>> c) asocjacja klienta z serwerem RADIUS do uwierzytelnienia 
+
+            [#1] Sieć WLAN działająca w paśmie 2.4GHz może: 
+            >>> a) pracować w oparciu o standard 802.11b 
+            b) pracować w oparciu o standard 802.11ac 
+            c) wykorzystywać kanał o szerokości 80 MHz 
+            >>> d) pracować w oparciu o standard 802.11g 
+            e) pracować w oparciu o standard 802.11a
+            >>> f) pracować w standardzie wykorzystującym technologię MIMO (Multiple Input Multiple Output)
+            >>> g) interferować z siecią Bluetooth
+
+            [#1] Nagłówek PLCP: 
+            >>> a) jest zabezpieczony sumą kontrolną CRC 
+            >>> b) jest poprzedzony preambułą 
+            >>> c) poprzedza nagłówek MAC standardu IEEE 802.11 
+            >>> d) zawiera informację o prędkości transmisji danej ramki 
+            e) zawiera pola adresowe 
+            f) zawiera numer sekwencyjny 
+            g) zawiera BSSID 
+            h) zawiera SSID 
+            >>> i) w celu zapewnienia niezawodności transmisji, nadawany jest zawsze z najniższą możliwą prędkością 
+
+            [#1] Protokół EAP: 
+            >>> to skrót oznaczający Extensible Authentication Protocol 
+            >>> jego odpowiednikiem dla urządzeń sieciowych Cisco jest LEAP 
+            >>> podobnie jak Open System i Shared Key służy do uwierzytelniania 
+            >>> posiada wbudowane mechanizmy pozwalające na eliminację pojawiających się duplikatów pakietów 
+            nie posiada możliwości negocjacji używanej metody uwierzytelniania 
+            nie posiada mechanizmu pozwalającego na ponowną retransmisję zagubionych pakietów 
+            gwarantuje obsługę mechanizmu fragmentacji ramek 
+            nie jest używany w sieciach korzystających z protokołu IEEE802.11 
+
                         
 
 
